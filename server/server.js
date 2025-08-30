@@ -14,6 +14,7 @@ const __dirname = path.dirname(__filename);
 
 
 const app = express();
+const PORT = process.env.PORT || 8080;
 app.use(express.json({ limit: '10mb' }));
 
 
@@ -25,7 +26,6 @@ console.warn('[WARN] GLAM_API_KEY no está definido en .env');
 
 // Servir archivos estáticos
 app.use(express.static(path.join(__dirname, '..', 'public')));
-
 
 // Mock de productos (o podrías servir el archivo directamente)
 import fs from 'fs';
@@ -66,6 +66,19 @@ body: JSON.stringify({ mask_type, media_url, garment_url })
 
 const r = await fetch(url, options);
 const data = await r.json();
+
+
 if (!r.ok) {
-app.listen(PORT, () => console.log(`Áurea server escuchando en http://localhost:${PORT}`)); 
+return res.status(r.status).json(data);
 }
+
+
+res.json(data);
+} catch (error) {
+console.error('Error en el proxy de Try-On:', error);
+res.status(500).json({ error: 'Error interno del servidor' });
+}
+});
+
+
+app.listen(PORT, () => console.log(`Áurea server escuchando en http://localhost:${PORT}`));

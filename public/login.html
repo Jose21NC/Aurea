@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Áurea · Login</title>
+<link rel="stylesheet" href="/styles.css" />
+<script type="module">
+import { initTheme, toggleTheme } from './theme.js';
+import { showToast } from './app.js';
+window.toggleTheme = toggleTheme;
+window.showToast = showToast;
+initTheme();
+</script>
+</head>
+<body>
+<header>
+<div class="nav">
+<a class="brand" href="/index.html"><div class="logo"></div><span>Áurea</span></a>
+<div class="nav-actions">
+<button class="icon-btn" aria-label="Tema" onclick="toggleTheme()">🌓</button>
+</div>
+</div>
+</header>
+
+
+<main>
+<section class="view auth active">
+<div class="card">
+<h1>Bienvenido a Áurea</h1>
+<p class="muted">Accede para explorar moda local y probar prendas con IA.</p>
+<form class="form" onsubmit="event.preventDefault(); localStorage.setItem('aurea_user','demo'); location.href='/index.html'">
+<label>
+<span class="muted">Correo</span>
+<input class="input" required type="email" placeholder="tu@email.com" />
+</label>
+<label>
+<span class="muted">Contraseña</span>
+<input class="input" required type="password" placeholder="••••••••" />
+</label>
+<button class="btn" type="submit">Iniciar sesión</button>
+</form>
+<div style="display:flex; gap:10px; margin-top:10px;">
+<button class="btn secondary" onclick="showToast('Google SSO (demo)')">Google</button>
+<button class="btn secondary" onclick="showToast('Facebook SSO (demo)')">Facebook</button>
+</div>
+</div>
+</section>
+</main>
+</body>
+</html>

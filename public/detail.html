@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Áurea · Detalle</title>
+<link rel="stylesheet" href="/styles.css" />
+<script type="module">
+import { initTheme, toggleTheme } from './theme.js';
+import { fetchProducts, currency, param, showToast, tryOn } from './app.js';
+
+
+window.toggleTheme = toggleTheme;
+
+
+async function render(){
+initTheme();
+const id = Number(param('id'));
+const products = await fetchProducts();
+const p = products.find(x => Number(x.id) === id);
+if(!p){
+document.getElementById('content').innerHTML = '<div class="card"><h2>Producto no encontrado</h2></div>';
+return;
+}
+
+
+document.getElementById('bcCategory').textContent = p.category;
+document.getElementById('bcTitle').textContent = p.title;
+document.getElementById('detailTitle').textContent = p.title;
+document.getElementById('detailPrice').textContent = currency(p.price);
+document.getElementById('detailDesc').textContent = p.desc;
+document.getElementById('detailImg').src = p.image;
+document.getElementById('detailImg').alt = p.title;
+
+
+// Tallas
+const sizeGroup = document.getElementById('sizeGroup');
+sizeGroup.innerHTML = p.sizes.map((s, i)=> `
+<span class="size-opt">
+<input type="radio" name="size" id="size-${s}" ${i===0?'checked':''} />
+<label for="size-${s}">${s}</label>
+</span>
+`).join('');
+
+
+// Colores
+const colorGroup = document.getElementById('colorGroup');
+colorGroup.innerHTML = p.colors.map((c, i)=> `
+<span class="color-opt">
+<input type="radio" name="color" id="color-${i}" ${i===0?'checked':''} />
+<label for="color-${i}" style="background:${c}"></label>
+</span>
+`).join('');
+
+
+// Botón Try-On (demo: media_url fija; en producción, usar foto del usuario)
+document.getElementById('btnTry').addEventListener('click', async ()=>{
+try {
+const media_url = 'https://static.getglam.app/api_service/target.jpg';
+const garment_url = p.image; // o una URL específica de la prenda
+const mask_type = p.mask_type || 'overall';
+showToast('Procesando try-on…');
+const result = await tryOn({ mask_type, media_url, garment_url });
+console.log('Try-on result:', result);
+showToast('Try-on listo. Revisa la consola para ver la respuesta.');
+// Podrías mostrar el resultado en un <img> si la API devuelve una URL de imagen.
+} catch (err) {
+console.error(err);
+showToast('Error en try-on');
+}
+</html>

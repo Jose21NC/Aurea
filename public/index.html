@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Áurea · Marketplace</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <noscript>
+    <style>
+      .js-only { display: none !important; }
+      .no-js-msg { padding: 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--card); }
+    </style>
+  </noscript>
+  <script type="module">
+    import { initTheme, toggleTheme } from './theme.js';
+    import { fetchProducts, currency } from './app.js';
+
+    window.toggleTheme = toggleTheme;
+
+    async function render(){
+      initTheme();
+      const grid = document.getElementById('grid');
+      const qInput = document.getElementById('searchInput');
+      const chips  = document.querySelectorAll('[data-filter]');
+      let currentFilter = 'all';
+
+      let products = [];
+      try {
+        const loading = document.getElementById('loading');
+        loading.textContent = 'Cargando productos…';
+        products = await fetchProducts();
+        loading.remove();
+      } catch (e) {
+        console.error(e);
+        const err = document.createElement('div');
+        err.className = 'card';
+        err.innerHTML = '<h2>Error</h2><p class="muted">No se pudieron cargar los productos (revisa el servidor y <code>/api/products</code>).</p>';
+        grid.replaceWith(err);
+        return;
+      }
+
+      function draw(){
+        const q = (qInput.value || '').toLowerCase();
+        const items = products.filter(p => (currentFilter === 'all' || p.category === currentFilter) &&
+                                           (!q || p.title.toLowerCase().includes(q)));
+        grid.innerHTML = items.map(p => `
+          <article class="product">
+            <a href="/detail.html?id=${encodeURIComponent(p.id)}" aria-label="${p.title}">
+              <div class="p-media">
+                <img src="${p.image}" alt="${p.title}" loading="lazy" />
+              </div>
+              <div class="p-body">
+                <div class="p-title">${p.title}</div>
+                <div class="price">${currency(p.price)}</div>
+              </div>
+            </a>
+          </article>
+        `).join('');
+
+        if(items.length === 0){
+          grid.innerHTML = `
+            <div class="card" style="grid-column: 1 / -1; text-align:center;">
+              <h2>Sin resultados</h2>
+              <p class="muted">Prueba otro término o quita los filtros.</p>
+            </div>`;
+        }
+      }
+
+      qInput.addEventListener('input', draw);
+      chips.forEach(c => c.addEventListener('click', (e) => {
+        chips.forEach(x => x.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        currentFilter = e.currentTarget.dataset.filter;
+        draw();
+      }));
+
+      draw();
+    }
+
+    window.addEventListener('DOMContentLoaded', render);
+  </script>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <a class="brand" href="/"><div class="logo"></div><span>Áurea</span></a>
+      <div class="nav-actions">
+        <a class="icon-btn" href="/login.html" title="Login" aria-label="Login">👤</a>
+        <button class="icon-btn" aria-label="Tema" onclick="toggleTheme()">🌓</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="view active">
+      <div class="no-js-msg">
+        Si ves esta caja y la página no cambia, activa JavaScript para usar el marketplace.
+      </div>
+
+      <div class="search js-only" role="search" style="margin-top:12px;">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+        </svg>
+        <input id="searchInput" placeholder="Buscar en Áurea… (ej. camisa, vestido)" />
+        <button class="icon-btn" title="Limpiar" onclick="document.getElementById('searchInput').value=''; document.getElementById('searchInput').dispatchEvent(new Event('input'))">✖</button>
+      </div>
+
+      <div class="js-only" style="display:flex; gap:8px; flex-wrap:wrap; margin:12px 0;">
+        <button class="chip active" data-filter="all">Todo</button>
+        <button class="chip" data-filter="mujer">Mujer</button>
+        <button class="chip" data-filter="hombre">Hombre</button>
+        <button class="chip" data-filter="unisex">Unisex</button>
+      </div>
+
+      <p id="loading" class="muted js-only" style="margin:12px 0;">Cargando…</p>
+      <div id="grid" class="grid" aria-live="polite"></div>
+    </section>
+  </main>
+</body>
+</html>
