@@ -53,19 +53,135 @@ colorGroup.innerHTML = p.colors.map((c, i)=> `
 `).join('');
 
 
-// Botón Try-On (demo: media_url fija; en producción, usar foto del usuario)
-document.getElementById('btnTry').addEventListener('click', async ()=>{
-try {
-const media_url = 'https://static.getglam.app/api_service/target.jpg';
-const garment_url = p.image; // o una URL específica de la prenda
-const mask_type = p.mask_type || 'overall';
-showToast('Procesando try-on…');
-const result = await tryOn({ mask_type, media_url, garment_url });
-console.log('Try-on result:', result);
-showToast('Try-on listo. Revisa la consola para ver la respuesta.');
-// Podrías mostrar el resultado en un <img> si la API devuelve una URL de imagen.
-} catch (err) {
-console.error(err);
-showToast('Error en try-on');
-}
+// --- Try-On ---
+const userPhotoInput = document.getElementById('userPhotoInput');
+const fileName = document.getElementById('fileName');
+const btnTry = document.getElementById('btnTry');
+const tryOnResultContainer = document.getElementById('tryOnResultContainer');
+const tryOnResultImg = document.getElementById('tryOnResultImg');
+const tryOnError = document.getElementById('tryOnError');
+const tryOnErrorMessage = document.getElementById('tryOnErrorMessage');
+
+let userImageBase64 = null;
+
+userPhotoInput.addEventListener('change', () => {
+  const file = userPhotoInput.files[0];
+  if (file) {
+    fileName.textContent = file.name;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      userImageBase64 = e.target.result;
+      btnTry.disabled = false;
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+btnTry.addEventListener('click', async () => {
+  if (!userImageBase64) {
+    showToast('Por favor, selecciona una foto primero.');
+    return;
+  }
+
+  try {
+    showToast('Procesando try-on…');
+    btnTry.disabled = true;
+    btnTry.textContent = 'Generando…';
+    tryOnError.style.display = 'none';
+
+    const garment_url = p.image;
+    const mask_type = p.mask_type || 'overall';
+
+    const result = await tryOn({
+      mask_type,
+      media_url: userImageBase64,
+      garment_url
+    });
+
+    if (result.result_url) {
+      tryOnResultImg.src = result.result_url;
+      tryOnResultContainer.style.display = 'block';
+      document.getElementById('detailImg').style.display = 'none';
+      showToast('¡Try-on listo!');
+    } else {
+      throw new Error('La respuesta de la API no contiene una URL de resultado.');
+    }
+
+  } catch (err) {
+    console.error(err);
+    tryOnErrorMessage.textContent = err.message || 'Ocurrió un error inesperado.';
+    tryOnError.style.display = 'block';
+    showToast('Error en el try-on');
+  } finally {
+    btnTry.disabled = false;
+    btnTry.textContent = 'Generar Try-On';
+  }
+});
+</script>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <a class="brand" href="/"><div class="logo"></div><span>Áurea</span></a>
+      <div class="nav-actions">
+        <a class="icon-btn" href="/login.html" title="Login" aria-label="Login">👤</a>
+        <button class="icon-btn" aria-label="Tema" onclick="toggleTheme()">🌓</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="content" class="view active">
+      <p class="breadcrumb">
+        <a href="/">Marketplace</a> / <span id="bcCategory"></span> / <b id="bcTitle"></b>
+      </p>
+
+      <div class="detail-grid" style="margin-top:24px;">
+        <img id="detailImg" class="detail-img" alt="" />
+
+        <div id="tryOnResultContainer" style="display:none;">
+          <img id="tryOnResultImg" class="detail-img" alt="Resultado del Try-On" />
+        </div>
+
+        <div class="detail-card">
+          <div>
+            <h1 id="detailTitle" style="margin:0 0 8px;"></h1>
+            <b id="detailPrice" class="price" style="font-size:1.4rem"></b>
+          </div>
+          <p id="detailDesc" class="muted"></p>
+
+          <div>
+            <b>Talla</b>
+            <div id="sizeGroup" class="sizes" style="margin-top:8px;"></div>
+          </div>
+          <div>
+            <b>Color</b>
+            <div id="colorGroup" class="colors" style="margin-top:8px;"></div>
+          </div>
+
+          <div id="tryOnSection">
+            <b>Prueba con IA</b>
+            <p class="muted" style="font-size:.9rem; margin-top:4px;">Sube una foto tuya para ver cómo te queda.</p>
+            <input type="file" id="userPhotoInput" accept="image/*" style="display:none;" />
+            <label for="userPhotoInput" class="btn secondary" style="margin-top:8px; text-align:center;">
+              Seleccionar foto
+            </label>
+            <p id="fileName" class="muted" style="font-size:.8rem; margin-top:8px; text-align:center;"></p>
+          </div>
+
+          <div id="tryOnError" class="card" style="display:none; background: #8f0b0b2e; border-color:#ff42425e; margin-top:12px;">
+            <b style="color:#ff9e9e">Error</b>
+            <p id="tryOnErrorMessage" class="muted" style="margin-top:4px;"></p>
+          </div>
+
+          <div style="display:grid; gap:12px; margin-top:12px;">
+            <button id="btnBuy" class="btn">Comprar ahora</button>
+            <button id="btnTry" class="btn secondary" disabled>Generar Try-On</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+</body>
 </html>
