@@ -53,18 +53,30 @@ main{max-width:1200px; margin:0 auto; padding:24px clamp(16px,4vw,28px) 64px}
 
 /* Marketplace */
 .search{display:grid; grid-template-columns:40px 1fr 44px; align-items:center; gap:8px; background: var(--card); border:1px solid var(--border); border-radius:14px; padding:6px}
-.grid{display:grid; grid-template-columns: repeat( auto-fill, minmax(220px, 1fr) ); gap:16px}
-.product{border:1px solid var(--border); border-radius:16px; overflow:hidden; background: var(--card)}
-.p-body{padding:12px; display:grid; gap:8px}
+.grid{display:grid; grid-template-columns: repeat( auto-fill, minmax(220px, 1fr) ); gap:24px}
+.product{border-radius:16px; overflow:hidden; background: var(--card); position:relative; transition: all .3s ease}
+.product:hover{transform:translateY(-4px); box-shadow:0 8px 24px color-mix(in oklab, var(--card), transparent 20%)}
+.p-media{aspect-ratio:4/5; object-fit:cover}
+.p-body{padding:16px; display:grid; gap:8px}
 .p-title{font-weight:600}
-.price{font-weight:700; color:#9a7d0a}
+.price{font-weight:700; color:var(--gold)}
 
 
 /* Detail */
 .breadcrumb{color:var(--muted); font-size:.9rem}
-.detail-grid{display:grid; grid-template-columns:1.1fr 1fr; gap:24px}
+.detail-grid{display:grid; grid-template-columns:1.1fr 1fr; gap:32px; align-items:start}
+.detail-img{border-radius:18px; aspect-ratio:4/5; object-fit:cover}
 @media (max-width:920px){.detail-grid{grid-template-columns:1fr}}
-.detail-card{background: var(--card); border:1px solid var(--border); border-radius:16px; padding:18px; display:grid; gap:14px}
-.sizes,.colors{display:flex; gap:8px; flex-wrap:wrap}
-.size-opt label{display:inline-flex; min-width:44px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; cursor:pointer}
-.color-opt label{width:36px; height:36px; border-radius:10px; border:2px solid var(--border); display:inline-block; cursor:pointer}
+@media (max-width:600px){
+  .grid{gap:16px}
+  .p-body{padding:12px}
+  .search{padding:4px; grid-template-columns:36px 1fr 38px}
+  .chips{gap:6px}
+  .chip{padding:6px 10px; font-size:.9rem}
+}
+.detail-card{background: var(--card); border:1px solid var(--border); border-radius:18px; padding:24px; display:grid; gap:16px}
+.sizes,.colors{display:flex; gap:10px; flex-wrap:wrap}
+.size-opt input:checked + label{border-color:var(--gold); color:var(--gold)}
+.size-opt label{display:inline-flex; min-width:44px; padding:10px 14px; border:1px solid var(--border); border-radius:12px; cursor:pointer}
+.color-opt input:checked + label{border-color:var(--gold); box-shadow:0 0 0 2px var(--gold)}
+.color-opt label{width:38px; height:38px; border-radius:12px; border:2px solid var(--border); display:inline-block; cursor:pointer}
