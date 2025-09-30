@@ -120,6 +120,33 @@
             </div>
         </div>
     </main>
+    
+    <!-- Modal para el Probador Virtual -->
+    <div id="tryon-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full text-center relative mx-4">
+            <button id="close-modal-button" class="absolute top-2 right-3 text-2xl text-gray-500 hover:text-gray-800">&times;</button>
+            <!-- Loading State -->
+            <div id="modal-loading">
+                <h3 class="text-xl font-semibold mb-4 text-aurea-charcoal">Generando tu prueba...</h3>
+                <p class="text-aurea-charcoal/70 mb-4">Esto puede tardar un momento. ¡Gracias por tu paciencia!</p>
+                <svg class="animate-spin h-10 w-10 text-aurea-gold mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                 <p id="modal-status-text" class="text-sm text-aurea-charcoal/60 mt-4">Iniciando proceso...</p>
+            </div>
+            <!-- Result State -->
+            <div id="modal-result" class="hidden">
+                 <h3 class="text-2xl font-bold mb-4 text-aurea-charcoal">¡Aquí está tu resultado!</h3>
+                 <img id="result-image" src="" alt="Resultado del probador virtual" class="rounded-lg mx-auto max-h-[60vh] object-contain">
+            </div>
+             <!-- Error State -->
+            <div id="modal-error" class="hidden">
+                 <h3 class="text-xl font-semibold mb-4 text-red-600">Hubo un Error</h3>
+                 <p id="error-text" class="text-aurea-charcoal/80"></p>
+            </div>
+        </div>
+    </div>
 
     <footer class="bg-aurea-charcoal text-aurea-white mt-12"><div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center"><p>&copy; 2024 Áurea. Todos los derechos reservados.</p></div></footer>
 
@@ -136,6 +163,19 @@
         
         let currentUser = null;
         let currentProductId = null;
+        let currentProductImageUrl = null; // Para el probador virtual
+        let pollingInterval = null; // Para detener el polling
+
+        // Elementos del Modal del Probador Virtual
+        const tryOnModal = document.getElementById('tryon-modal');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const modalLoading = document.getElementById('modal-loading');
+        const modalResult = document.getElementById('modal-result');
+        const resultImage = document.getElementById('result-image');
+        const modalError = document.getElementById('modal-error');
+        const errorText = document.getElementById('error-text');
+        const modalStatusText = document.getElementById('modal-status-text');
+
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -152,6 +192,8 @@
         });
         
         const displayProductDetails = (product) => {
+            currentProductImageUrl = product.imageUrl; // Guardamos la URL de la prenda
+
             const colorsHtml = product.colors && product.colors.length > 0
                 ? product.colors.map(color => `<button class="h-8 w-8 rounded-full border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-aurea-gold" style="background-color: ${color};" title="${color}"></button>`).join('')
                 : '<p class="text-sm text-aurea-charcoal/70">No hay colores especificados.</p>';
@@ -191,7 +233,24 @@
                             ${product.stock === 0 ? 'Agotado' : 'Añadir al Carrito'}
                         </button>
                     </div>
+
+                    <!-- Sección del Probador Virtual -->
+                    <div class="mt-8 pt-6 border-t border-aurea-neutral-gray/50">
+                        <h3 class="text-lg font-semibold text-aurea-charcoal">Probador Virtual con IA</h3>
+                        <p class="text-sm text-aurea-charcoal/70 mt-1">Pega el URL de una foto tuya (cuerpo completo) para ver cómo te queda esta prenda.</p>
+                        <div class="mt-4 space-y-2">
+                            <input type="url" id="user-image-url" placeholder="https://tu-foto.com/imagen.jpg" class="w-full px-3 py-2 border border-aurea-neutral-gray rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-aurea-gold transition">
+                            <button id="tryon-button" class="w-full flex justify-center py-2 px-4 rounded-lg shadow-sm text-sm font-bold text-aurea-charcoal bg-aurea-gold hover:bg-aurea-gold/90 transition">
+                                Probar Ahora
+                            </button>
+                             <p id="tryon-error-text" class="text-xs text-red-600 text-center"></p>
+                        </div>
+                    </div>
+
                 </div>`;
+            
+            // Añadimos el listener al botón del probador virtual una vez que existe en el DOM
+            document.getElementById('tryon-button').addEventListener('click', handleVirtualTryOn);
             reviewsSection.classList.remove('hidden');
         };
         
@@ -244,7 +303,6 @@
 
                 if (docSnap.exists()) {
                     const productData = docSnap.data();
-                    // Log para depuración: Muestra en la consola los datos recibidos
                     console.log("Datos del producto obtenidos de Firebase:", productData);
                     displayProductDetails({ id: docSnap.id, ...productData });
                     await fetchAndDisplayReviews(productId);
@@ -257,6 +315,108 @@
                 productDetailContainer.innerHTML = '<p class="text-center col-span-full text-red-600 font-semibold">Error al cargar el producto.</p>';
             }
         };
+        
+        // --- LÓGICA DEL PROBADOR VIRTUAL ---
+        
+        const API_KEY = 'DeqSDwfWwec'; // Clave de la API de Glam.ai
+        const API_URL = 'https://api.glam.ai/api/v1/tryon';
+
+        function resetModal() {
+            modalLoading.style.display = 'block';
+            modalResult.classList.add('hidden');
+            modalError.classList.add('hidden');
+            modalStatusText.textContent = 'Iniciando proceso...';
+        }
+
+        async function pollForResult(eventId) {
+            modalStatusText.textContent = 'Procesando tu imagen...';
+            pollingInterval = setInterval(async () => {
+                try {
+                    const response = await fetch(`${API_URL}/${eventId}`, {
+                        headers: { 'X-API-Key': API_KEY, 'accept': 'application/json' }
+                    });
+                    if (!response.ok) throw new Error(`Error en la API: ${response.statusText}`);
+                    const result = await response.json();
+                    
+                    modalStatusText.textContent = `Estado actual: ${result.status}`;
+
+                    if (result.status === 'READY') {
+                        clearInterval(pollingInterval);
+                        modalLoading.style.display = 'none';
+                        resultImage.src = result.media_urls[0];
+                        modalResult.classList.remove('hidden');
+                    } else if (result.status === 'FAILED') {
+                        clearInterval(pollingInterval);
+                        modalLoading.style.display = 'none';
+                        errorText.textContent = 'La generación de la imagen ha fallado. Por favor, intenta con otra foto.';
+                        modalError.classList.remove('hidden');
+                    }
+                    // Si es IN_PROGRESS o IN_QUEUE, simplemente esperamos a la siguiente llamada.
+                } catch (error) {
+                    clearInterval(pollingInterval);
+                    console.error('Error durante el polling:', error);
+                    modalLoading.style.display = 'none';
+                    errorText.textContent = 'No se pudo obtener el resultado. Inténtalo de nuevo más tarde.';
+                    modalError.classList.remove('hidden');
+                }
+            }, 3000); // Hacemos polling cada 3 segundos
+        }
+
+        async function handleVirtualTryOn() {
+            const userImageUrlInput = document.getElementById('user-image-url');
+            const tryOnErrorText = document.getElementById('tryon-error-text');
+            const userImageUrl = userImageUrlInput.value.trim();
+
+            if (!userImageUrl) {
+                tryOnErrorText.textContent = 'Por favor, introduce un URL de tu foto.';
+                return;
+            }
+            tryOnErrorText.textContent = '';
+            
+            resetModal();
+            tryOnModal.classList.remove('hidden');
+
+            const options = {
+                method: 'POST',
+                headers: {
+                    'accept': 'application/json',
+                    'content-type': 'application/json',
+                    'X-API-Key': XXVcS-uh74S0UXVSfa_2rA
+                },
+                body: JSON.stringify({
+                    // Por ahora usamos 'overall'. Esto podría ser dinámico basado en la categoría del producto.
+                    mask_type: 'overall', 
+                    media_url: userImageUrl,
+                    garment_url: currentProductImageUrl
+                })
+            };
+
+            try {
+                const response = await fetch(API_URL, options);
+                if (!response.ok) throw new Error(`Error en la API: ${response.statusText}`);
+                const data = await response.json();
+
+                if (data.event_id) {
+                    await pollForResult(data.event_id);
+                } else {
+                    throw new Error('La API no devolvió un event_id.');
+                }
+            } catch (err) {
+                console.error('Error al iniciar el probador virtual:', err);
+                modalLoading.style.display = 'none';
+                errorText.textContent = 'No se pudo iniciar el proceso. Verifica el URL de la imagen y tu conexión.';
+                modalError.classList.remove('hidden');
+            }
+        }
+        
+        closeModalButton.addEventListener('click', () => {
+            tryOnModal.classList.add('hidden');
+            if (pollingInterval) {
+                clearInterval(pollingInterval); // Detenemos el polling si se cierra el modal
+            }
+        });
+
+        // --- FIN LÓGICA DEL PROBADOR VIRTUAL ---
 
         reviewForm.addEventListener('submit', async (e) => {
             e.preventDefault();
