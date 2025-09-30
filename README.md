@@ -32,23 +32,37 @@ El comercio digital en Nicaragua enfrenta dos grandes desafíos:
 * **🛒 Experiencia de Compra Fluida:** Un proceso de descubrimiento, prueba y pago simple, rápido y seguro.
 
 ## 🛠️ Tecnologías Utilizadas
+- **Frontend:** HTML5, CSS3, JavaScript Moderno (ES Modules) y Tailwind CSS.
+- **Backend as a Service (BaaS):** Firebase
+  - **Base de Datos:** Cloud Firestore
+  - **Autenticación:** Firebase Authentication
+  - **Almacenamiento:** Firebase Storage (para imágenes de usuario)
+  - **Serverless:** Cloud Functions (para el proxy de la API de IA)
+- **Inteligencia Artificial:** API externa de [Glam.ai](https://glam.ai/) para la funcionalidad de probador virtual.
 
-Este proyecto está construido con un stack de tecnologías web directas, eficientes y altamente escalables, centrado en la plataforma de Firebase.
+## Estructura del Proyecto
+/ (raíz del proyecto)
+|
+|-- index.html              # Página principal con el catálogo de productos.
+|-- product-detail.html     # Vista detallada de un producto individual.
+|-- login.html              # Página de inicio de sesión.
+|-- register.html           # Página de registro de nuevos usuarios.
+|-- uploader.html           # Herramienta interna para subir productos en lote.
+|-- products-data.js        # Archivo de datos para la herramienta de subida.
+|-- firebase-config.js      # Módulo para la configuración e inicialización de Firebase.
+|
+|-- /functions/
+|   |-- index.js            # Código de la Cloud Function que actúa como proxy.
+|   |-- package.json        # Dependencias de la Cloud Function.
 
-* **Frontend:** **HTML5, CSS3, y JavaScript (Vanilla JS)**
-    * *Se utiliza tecnología web nativa para garantizar un rendimiento óptimo, accesibilidad universal y un mantenimiento sencillo.*
+## Estado del Proyecto
 
-* **Backend & Base de Datos:** **Firebase**
-    * **Firestore:** Como base de datos NoSQL en tiempo real para gestionar productos, usuarios y órdenes.
-    * **Firebase Authentication:** Para manejar el registro y la autenticación segura de usuarios.
-    * **Cloud Storage for Firebase:** Para almacenar todos los activos visuales, como las fotos de los productos.
-
-* **Inteligencia Artificial:** **API de Servicio Externo**
-    * *Se integra un servicio de IA especializado a través de una API REST para potenciar la función de probador virtual.*
-
-* **Despliegue:** **Firebase Hosting**
-    * *Para un despliegue global rápido, seguro y con CDN integrado.*
-
+Actualmente, el proyecto se encuentra en una fase de prototipado funcional. Las siguientes características están implementadas:
+- Arquitectura de frontend modular.
+- Autenticación de usuarios.
+- Visualización de catálogo y detalle de productos desde Firestore.
+- Sistema de reseñas.
+- Integración funcional del probador virtual con IA a través de un proxy seguro.
 
 ## 📄 Licencia
 
