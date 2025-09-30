@@ -288,8 +288,8 @@
             }
         };
         
-        const API_KEY = 'XXVcS-uh74S0UXVSfa_2rA';
-        const API_URL = 'https://api.glam.ai/api/v1/tryon';
+        // ¡IMPORTANTE! Reemplaza esta URL con la URL de tu Cloud Function después de desplegarla.
+        const CLOUD_FUNCTION_URL = 'https://us-central1-aurea-marketplace.cloudfunctions.net/api';
 
         function setupTryOnSection() {
             const container = document.getElementById('tryon-container');
@@ -374,24 +374,34 @@
             resetModal();
             tryOnModal.classList.remove('hidden');
 
+            if (CLOUD_FUNCTION_URL.startsWith('REEMPLAZA_ESTO')) {
+                showModalError('La URL de la Cloud Function no ha sido configurada.');
+                return;
+            }
+
             const options = {
                 method: 'POST',
-                headers: { 'accept': 'application/json', 'content-type': 'application/json', 'X-API-Key': API_KEY },
-                body: JSON.stringify({ mask_type: 'overall', media_url: userImageUrl, garment_url: currentProductImageUrl })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    mask_type: 'overall', 
+                    media_url: userImageUrl, 
+                    garment_url: currentProductImageUrl 
+                })
             };
 
             try {
-                const response = await fetch(API_URL, options);
-                if (!response.ok) throw new Error(`Error en la API: ${response.statusText}`);
+                // Se anexa /tryon a la URL base de la función
+                const response = await fetch(`${CLOUD_FUNCTION_URL}/tryon`, options);
+                if (!response.ok) throw new Error(`Error en el servidor proxy: ${response.statusText}`);
                 const data = await response.json();
                 if (data.event_id) {
                     await pollForResult(data.event_id);
                 } else {
-                    throw new Error('La API no devolvió un event_id.');
+                    throw new Error('El servidor proxy no devolvió un event_id.');
                 }
             } catch (err) {
                 console.error('Error al iniciar probador virtual:', err);
-                showModalError('No se pudo iniciar el proceso. Verifica tu conexión.');
+                showModalError('No se pudo iniciar el proceso. Verifica tu conexión y la configuración de la Cloud Function.');
             }
         }
         
@@ -411,8 +421,9 @@
             modalStatusText.textContent = 'Procesando tu imagen...';
             pollingInterval = setInterval(async () => {
                 try {
-                    const response = await fetch(`${API_URL}/${eventId}`, { headers: { 'X-API-Key': API_KEY, 'accept': 'application/json' } });
-                    if (!response.ok) throw new Error(`Error en la API: ${response.statusText}`);
+                    // Se anexa /tryon/:eventId a la URL base de la función
+                    const response = await fetch(`${CLOUD_FUNCTION_URL}/tryon/${eventId}`);
+                    if (!response.ok) throw new Error(`Error en el servidor proxy: ${response.statusText}`);
                     const result = await response.json();
                     
                     modalStatusText.textContent = `Estado: ${result.status}`;
