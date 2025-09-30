@@ -2,9 +2,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 // Your web app's Firebase configuration
-// IMPORTANTE: Reemplaza esto con la configuración de tu propio proyecto de Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyCLyc7GfXJ9h22blNKPUPyene1jd3HzT9g",
   authDomain: "aurea-marketplace.firebaseapp.com",
@@ -15,10 +15,14 @@ const firebaseConfig = {
   measurementId: "G-V60FDVYLF4"
 };
 
-// Initialize Firebase
+
+// Inicializa Firebase
 const app = initializeApp(firebaseConfig);
+
+// Exporta los servicios que necesitas
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
-// Export the instances for use in other files
-export { app, auth, db };
+export { auth, db, storage };
+

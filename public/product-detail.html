@@ -88,7 +88,6 @@
         <div id="reviews-section" class="mt-16 pt-10 border-t border-aurea-neutral-gray hidden">
             <h2 class="text-2xl font-bold tracking-tight text-aurea-charcoal">Reseñas y Evaluaciones</h2>
             
-            <!-- Formulario para dejar una reseña -->
             <div class="mt-6 bg-aurea-neutral-gray/20 p-6 rounded-lg">
                 <h3 class="text-lg font-semibold">Deja tu reseña</h3>
                 <form id="review-form" class="mt-4 space-y-4">
@@ -111,21 +110,16 @@
                 </form>
             </div>
 
-            <!-- Lista de Reseñas Existentes -->
             <div class="mt-8">
                  <h3 class="text-lg font-semibold">Lo que otros dicen</h3>
-                 <div id="reviews-list" class="mt-4 space-y-6">
-                    <!-- Las reseñas se cargarán aquí -->
-                 </div>
+                 <div id="reviews-list" class="mt-4 space-y-6"></div>
             </div>
         </div>
     </main>
     
-    <!-- Modal para el Probador Virtual -->
     <div id="tryon-modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-lg p-8 max-w-md w-full text-center relative mx-4">
             <button id="close-modal-button" class="absolute top-2 right-3 text-2xl text-gray-500 hover:text-gray-800">&times;</button>
-            <!-- Loading State -->
             <div id="modal-loading">
                 <h3 class="text-xl font-semibold mb-4 text-aurea-charcoal">Generando tu prueba...</h3>
                 <p class="text-aurea-charcoal/70 mb-4">Esto puede tardar un momento. ¡Gracias por tu paciencia!</p>
@@ -135,12 +129,10 @@
                 </svg>
                  <p id="modal-status-text" class="text-sm text-aurea-charcoal/60 mt-4">Iniciando proceso...</p>
             </div>
-            <!-- Result State -->
             <div id="modal-result" class="hidden">
                  <h3 class="text-2xl font-bold mb-4 text-aurea-charcoal">¡Aquí está tu resultado!</h3>
                  <img id="result-image" src="" alt="Resultado del probador virtual" class="rounded-lg mx-auto max-h-[60vh] object-contain">
             </div>
-             <!-- Error State -->
             <div id="modal-error" class="hidden">
                  <h3 class="text-xl font-semibold mb-4 text-red-600">Hubo un Error</h3>
                  <p id="error-text" class="text-aurea-charcoal/80"></p>
@@ -151,9 +143,10 @@
     <footer class="bg-aurea-charcoal text-aurea-white mt-12"><div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center"><p>&copy; 2024 Áurea. Todos los derechos reservados.</p></div></footer>
 
     <script type="module">
-        import { db, auth } from './firebase-config.js';
+        import { db, auth, storage } from './firebase-config.js';
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { doc, getDoc, collection, addDoc, getDocs, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { doc, getDoc, collection, addDoc, getDocs, serverTimestamp, query, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
         const productDetailContainer = document.getElementById('product-detail-container');
         const reviewForm = document.getElementById('review-form');
@@ -163,10 +156,9 @@
         
         let currentUser = null;
         let currentProductId = null;
-        let currentProductImageUrl = null; // Para el probador virtual
-        let pollingInterval = null; // Para detener el polling
+        let currentProductImageUrl = null;
+        let pollingInterval = null;
 
-        // Elementos del Modal del Probador Virtual
         const tryOnModal = document.getElementById('tryon-modal');
         const closeModalButton = document.getElementById('close-modal-button');
         const modalLoading = document.getElementById('modal-loading');
@@ -184,25 +176,24 @@
                 getDoc(userDocRef).then(docSnap => {
                     if (docSnap.exists()) {
                         currentUser.displayName = docSnap.data().fullname;
+                        currentUser.photoForTryOn = docSnap.data().photoForTryOn;
                     }
+                    setupTryOnSection();
                 });
             } else {
                 currentUser = null;
+                setupTryOnSection();
             }
         });
         
         const displayProductDetails = (product) => {
-            currentProductImageUrl = product.imageUrl; // Guardamos la URL de la prenda
+            currentProductImageUrl = product.imageUrl;
 
-            const colorsHtml = product.colors && product.colors.length > 0
+            const colorsHtml = (product.colors && product.colors.length > 0)
                 ? product.colors.map(color => `<button class="h-8 w-8 rounded-full border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-aurea-gold" style="background-color: ${color};" title="${color}"></button>`).join('')
                 : '<p class="text-sm text-aurea-charcoal/70">No hay colores especificados.</p>';
-
-            const stockHtml = product.stock !== undefined
-                ? (product.stock > 0 
-                    ? `<p class="text-sm font-medium ${product.stock < 10 ? 'text-red-600' : 'text-green-600'}">¡Quedan ${product.stock} en stock!</p>` 
-                    : '<p class="text-sm font-medium text-red-600">Agotado</p>')
-                : '<p class="text-sm font-medium text-aurea-charcoal/70">Disponibilidad no especificada.</p>';
+                
+            const stockHtml = product.stock !== undefined ? (product.stock > 0 ? `<p class="text-sm font-medium ${product.stock < 10 ? 'text-red-600' : 'text-green-600'}">¡Quedan ${product.stock} en stock!</p>` : '<p class="text-sm font-medium text-red-600">Agotado</p>') : '<p class="text-sm font-medium text-aurea-charcoal/70">Disponibilidad no especificada.</p>';
             
             productDetailContainer.innerHTML = `
                 <div>
@@ -234,80 +225,61 @@
                         </button>
                     </div>
 
-                    <!-- Sección del Probador Virtual -->
                     <div class="mt-8 pt-6 border-t border-aurea-neutral-gray/50">
                         <h3 class="text-lg font-semibold text-aurea-charcoal">Probador Virtual con IA</h3>
-                        <p class="text-sm text-aurea-charcoal/70 mt-1">Pega el URL de una foto tuya (cuerpo completo) para ver cómo te queda esta prenda.</p>
-                        <div class="mt-4 space-y-2">
-                            <input type="url" id="user-image-url" placeholder="https://tu-foto.com/imagen.jpg" class="w-full px-3 py-2 border border-aurea-neutral-gray rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-aurea-gold transition">
-                            <button id="tryon-button" class="w-full flex justify-center py-2 px-4 rounded-lg shadow-sm text-sm font-bold text-aurea-charcoal bg-aurea-gold hover:bg-aurea-gold/90 transition">
-                                Probar Ahora
-                            </button>
-                             <p id="tryon-error-text" class="text-xs text-red-600 text-center"></p>
+                        <div id="tryon-container" class="mt-4 space-y-3">
+                            <!-- Esta sección se llenará dinámicamente -->
                         </div>
                     </div>
-
                 </div>`;
             
-            // Añadimos el listener al botón del probador virtual una vez que existe en el DOM
-            document.getElementById('tryon-button').addEventListener('click', handleVirtualTryOn);
             reviewsSection.classList.remove('hidden');
         };
         
         const displayReviews = (reviews) => {
             if (reviews.length === 0) {
-                reviewsList.innerHTML = '<p class="text-sm text-aurea-charcoal/70">Aún no hay reseñas para este producto. ¡Sé el primero!</p>';
+                reviewsList.innerHTML = '<p class="text-sm text-aurea-charcoal/70">Aún no hay reseñas. ¡Sé el primero!</p>';
                 return;
             }
             reviewsList.innerHTML = reviews.map(review => {
                 const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
-                return `
-                    <div class="border-t border-aurea-neutral-gray/50 pt-4">
-                        <div class="flex items-center">
-                            <p class="text-yellow-400 text-xl">${stars}</p>
-                            <p class="ml-4 font-semibold text-aurea-charcoal">${review.userName || 'Anónimo'}</p>
-                        </div>
-                        <p class="mt-2 text-aurea-charcoal/80">${review.comment}</p>
-                    </div>
-                `;
+                return `<div class="border-t border-aurea-neutral-gray/50 pt-4"><div class="flex items-center"><p class="text-yellow-400 text-xl">${stars}</p><p class="ml-4 font-semibold text-aurea-charcoal">${review.userName || 'Anónimo'}</p></div><p class="mt-2 text-aurea-charcoal/80">${review.comment}</p></div>`;
             }).join('');
         };
 
         const fetchAndDisplayReviews = async (productId) => {
-            const reviewsColRef = collection(db, "products", productId, "reviews");
-            const q = query(reviewsColRef, orderBy("createdAt", "desc"));
             try {
-                const querySnapshot = await getDocs(q);
+                const reviewsQuery = query(collection(db, "products", productId, "reviews"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(reviewsQuery);
                 const reviews = [];
-                querySnapshot.forEach(doc => reviews.push(doc.data()));
+                querySnapshot.forEach((doc) => {
+                    reviews.push(doc.data());
+                });
                 displayReviews(reviews);
             } catch (error) {
-                console.error("Error al obtener reseñas:", error);
-                reviewsList.innerHTML = '<p class="text-red-600">No se pudieron cargar las reseñas.</p>';
+                console.error("Error al obtener las reseñas:", error);
+                reviewsList.innerHTML = '<p class="text-sm text-red-600">No se pudieron cargar las reseñas.</p>';
             }
         };
 
         const fetchProductDetails = async () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('id');
-            currentProductId = productId;
+            currentProductId = urlParams.get('id');
 
-            if (!productId) {
-                productDetailContainer.innerHTML = '<p class="text-center col-span-full text-red-600 font-semibold">No se ha especificado un producto.</p>';
+            if (!currentProductId) {
+                productDetailContainer.innerHTML = '<p class="text-center col-span-full text-red-600 font-semibold">Producto no especificado.</p>';
                 return;
             }
 
             try {
-                const docRef = doc(db, "products", productId);
+                const docRef = doc(db, "products", currentProductId);
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
-                    const productData = docSnap.data();
-                    console.log("Datos del producto obtenidos de Firebase:", productData);
-                    displayProductDetails({ id: docSnap.id, ...productData });
-                    await fetchAndDisplayReviews(productId);
+                    displayProductDetails({ id: docSnap.id, ...docSnap.data() });
+                    setupTryOnSection();
+                    await fetchAndDisplayReviews(currentProductId);
                 } else {
-                    console.log("No se encontró el producto con ID:", productId);
                     productDetailContainer.innerHTML = '<p class="text-center col-span-full text-aurea-charcoal/70">Producto no encontrado.</p>';
                 }
             } catch (error) {
@@ -316,29 +288,134 @@
             }
         };
         
-        // --- LÓGICA DEL PROBADOR VIRTUAL ---
-        
-        const API_KEY = 'DeqSDwfWwec'; // Clave de la API de Glam.ai
+        const API_KEY = 'XXVcS-uh74S0UXVSfa_2rA';
         const API_URL = 'https://api.glam.ai/api/v1/tryon';
 
+        function setupTryOnSection() {
+            const container = document.getElementById('tryon-container');
+            if (!container) return;
+
+            if (currentUser && currentUser.photoForTryOn) {
+                container.innerHTML = `
+                    <p class="text-sm text-aurea-charcoal/70">Usa tu foto guardada o sube una nueva.</p>
+                    <div class="flex items-center space-x-4 p-2 border rounded-lg">
+                        <img src="${currentUser.photoForTryOn}" class="h-16 w-16 rounded-md object-cover">
+                        <div class="flex-grow">
+                            <button id="use-saved-photo-btn" class="w-full text-sm font-bold text-aurea-charcoal bg-aurea-gold hover:bg-aurea-gold/90 py-2 px-4 rounded-lg transition">Usar mi foto guardada</button>
+                        </div>
+                    </div>
+                    <button id="change-photo-btn" class="text-sm text-aurea-gold hover:underline">Subir una foto nueva</button>
+                `;
+                document.getElementById('use-saved-photo-btn').addEventListener('click', () => handleVirtualTryOn(currentUser.photoForTryOn));
+                document.getElementById('change-photo-btn').addEventListener('click', () => renderUploadView(true));
+            } else {
+                renderUploadView(false);
+            }
+        }
+
+        function renderUploadView(isChanging) {
+            const container = document.getElementById('tryon-container');
+            if (!container) return;
+            
+            const message = isChanging ? 'Sube tu nueva foto para probarla.' : 'Sube una foto tuya (cuerpo completo) para ver cómo te queda.';
+            container.innerHTML = `
+                <p class="text-sm text-aurea-charcoal/70">${message}</p>
+                <div>
+                    <input type="file" id="user-image-upload" accept="image/*" class="block w-full text-sm text-aurea-charcoal/80 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-aurea-gold/20 file:text-aurea-gold hover:file:bg-aurea-gold/30 cursor-pointer"/>
+                </div>
+                <div id="save-photo-container" class="${currentUser ? '' : 'hidden'} pt-1">
+                    <label class="flex items-center text-sm cursor-pointer">
+                        <input type="checkbox" id="save-photo-checkbox" class="h-4 w-4 rounded border-gray-300 text-aurea-gold focus:ring-aurea-gold">
+                        <span class="ml-2 text-aurea-charcoal/80">Guardar esta foto para futuros usos</span>
+                    </label>
+                </div>
+                <button id="upload-tryon-button" class="w-full flex justify-center py-2 px-4 rounded-lg shadow-sm text-sm font-bold text-aurea-charcoal bg-aurea-gold hover:bg-aurea-gold/90 transition">Subir y Probar</button>
+                <p id="tryon-error-text" class="text-xs text-red-600 text-center"></p>
+            `;
+             document.getElementById('upload-tryon-button').addEventListener('click', handleUploadAndTryOn);
+        }
+
+        async function handleUploadAndTryOn() {
+            const fileInput = document.getElementById('user-image-upload');
+            const errorTextElem = document.getElementById('tryon-error-text');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                errorTextElem.textContent = 'Por favor, selecciona un archivo de imagen.';
+                return;
+            }
+            errorTextElem.textContent = '';
+            
+            modalStatusText.textContent = 'Subiendo tu imagen...';
+            resetModal();
+            tryOnModal.classList.remove('hidden');
+
+            try {
+                const storageRef = ref(storage, `tryOnImages/${currentUser?.uid || 'guests'}/${Date.now()}-${file.name}`);
+                await uploadBytes(storageRef, file);
+                const downloadURL = await getDownloadURL(storageRef);
+
+                const savePhotoCheckbox = document.getElementById('save-photo-checkbox');
+                if (currentUser && savePhotoCheckbox?.checked) {
+                    const userDocRef = doc(db, "users", currentUser.uid);
+                    await updateDoc(userDocRef, { photoForTryOn: downloadURL });
+                    currentUser.photoForTryOn = downloadURL; // Update local state
+                }
+
+                await handleVirtualTryOn(downloadURL);
+
+            } catch(error) {
+                console.error("Error al subir imagen:", error);
+                showModalError('No se pudo subir tu imagen. Inténtalo de nuevo.');
+            }
+        }
+        
+        async function handleVirtualTryOn(userImageUrl) {
+            resetModal();
+            tryOnModal.classList.remove('hidden');
+
+            const options = {
+                method: 'POST',
+                headers: { 'accept': 'application/json', 'content-type': 'application/json', 'X-API-Key': API_KEY },
+                body: JSON.stringify({ mask_type: 'overall', media_url: userImageUrl, garment_url: currentProductImageUrl })
+            };
+
+            try {
+                const response = await fetch(API_URL, options);
+                if (!response.ok) throw new Error(`Error en la API: ${response.statusText}`);
+                const data = await response.json();
+                if (data.event_id) {
+                    await pollForResult(data.event_id);
+                } else {
+                    throw new Error('La API no devolvió un event_id.');
+                }
+            } catch (err) {
+                console.error('Error al iniciar probador virtual:', err);
+                showModalError('No se pudo iniciar el proceso. Verifica tu conexión.');
+            }
+        }
+        
         function resetModal() {
             modalLoading.style.display = 'block';
             modalResult.classList.add('hidden');
             modalError.classList.add('hidden');
-            modalStatusText.textContent = 'Iniciando proceso...';
+        }
+
+        function showModalError(message) {
+            modalLoading.style.display = 'none';
+            errorText.textContent = message;
+            modalError.classList.remove('hidden');
         }
 
         async function pollForResult(eventId) {
             modalStatusText.textContent = 'Procesando tu imagen...';
             pollingInterval = setInterval(async () => {
                 try {
-                    const response = await fetch(`${API_URL}/${eventId}`, {
-                        headers: { 'X-API-Key': API_KEY, 'accept': 'application/json' }
-                    });
+                    const response = await fetch(`${API_URL}/${eventId}`, { headers: { 'X-API-Key': API_KEY, 'accept': 'application/json' } });
                     if (!response.ok) throw new Error(`Error en la API: ${response.statusText}`);
                     const result = await response.json();
                     
-                    modalStatusText.textContent = `Estado actual: ${result.status}`;
+                    modalStatusText.textContent = `Estado: ${result.status}`;
 
                     if (result.status === 'READY') {
                         clearInterval(pollingInterval);
@@ -347,76 +424,20 @@
                         modalResult.classList.remove('hidden');
                     } else if (result.status === 'FAILED') {
                         clearInterval(pollingInterval);
-                        modalLoading.style.display = 'none';
-                        errorText.textContent = 'La generación de la imagen ha fallado. Por favor, intenta con otra foto.';
-                        modalError.classList.remove('hidden');
+                        showModalError('La generación de la imagen ha fallado. Intenta con otra foto.');
                     }
-                    // Si es IN_PROGRESS o IN_QUEUE, simplemente esperamos a la siguiente llamada.
                 } catch (error) {
                     clearInterval(pollingInterval);
                     console.error('Error durante el polling:', error);
-                    modalLoading.style.display = 'none';
-                    errorText.textContent = 'No se pudo obtener el resultado. Inténtalo de nuevo más tarde.';
-                    modalError.classList.remove('hidden');
+                    showModalError('No se pudo obtener el resultado.');
                 }
-            }, 3000); // Hacemos polling cada 3 segundos
-        }
-
-        async function handleVirtualTryOn() {
-            const userImageUrlInput = document.getElementById('user-image-url');
-            const tryOnErrorText = document.getElementById('tryon-error-text');
-            const userImageUrl = userImageUrlInput.value.trim();
-
-            if (!userImageUrl) {
-                tryOnErrorText.textContent = 'Por favor, introduce un URL de tu foto.';
-                return;
-            }
-            tryOnErrorText.textContent = '';
-            
-            resetModal();
-            tryOnModal.classList.remove('hidden');
-
-            const options = {
-                method: 'POST',
-                headers: {
-                    'accept': 'application/json',
-                    'content-type': 'application/json',
-                    'X-API-Key': XXVcS-uh74S0UXVSfa_2rA
-                },
-                body: JSON.stringify({
-                    // Por ahora usamos 'overall'. Esto podría ser dinámico basado en la categoría del producto.
-                    mask_type: 'overall', 
-                    media_url: userImageUrl,
-                    garment_url: currentProductImageUrl
-                })
-            };
-
-            try {
-                const response = await fetch(API_URL, options);
-                if (!response.ok) throw new Error(`Error en la API: ${response.statusText}`);
-                const data = await response.json();
-
-                if (data.event_id) {
-                    await pollForResult(data.event_id);
-                } else {
-                    throw new Error('La API no devolvió un event_id.');
-                }
-            } catch (err) {
-                console.error('Error al iniciar el probador virtual:', err);
-                modalLoading.style.display = 'none';
-                errorText.textContent = 'No se pudo iniciar el proceso. Verifica el URL de la imagen y tu conexión.';
-                modalError.classList.remove('hidden');
-            }
+            }, 3000);
         }
         
         closeModalButton.addEventListener('click', () => {
             tryOnModal.classList.add('hidden');
-            if (pollingInterval) {
-                clearInterval(pollingInterval); // Detenemos el polling si se cierra el modal
-            }
+            if (pollingInterval) clearInterval(pollingInterval);
         });
-
-        // --- FIN LÓGICA DEL PROBADOR VIRTUAL ---
 
         reviewForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -425,37 +446,29 @@
                 reviewStatus.className = 'text-red-600';
                 return;
             }
-            
             const rating = reviewForm.rating.value;
             const comment = reviewForm.comment.value;
-            const submitButton = reviewForm.querySelector('button');
-            
             if (!rating) {
                 reviewStatus.textContent = 'Por favor, selecciona una calificación.';
                 reviewStatus.className = 'text-red-600';
                 return;
             }
-
+            const submitButton = reviewForm.querySelector('button');
             submitButton.disabled = true;
             submitButton.textContent = 'Enviando...';
-
             try {
-                const reviewsColRef = collection(db, "products", currentProductId, "reviews");
-                await addDoc(reviewsColRef, {
+                await addDoc(collection(db, "products", currentProductId, "reviews"), {
                     userId: currentUser.uid,
                     userName: currentUser.displayName || 'Usuario de Áurea',
                     rating: Number(rating),
                     comment: comment,
                     createdAt: serverTimestamp()
                 });
-
                 reviewForm.reset();
                 reviewStatus.textContent = '¡Gracias por tu reseña!';
                 reviewStatus.className = 'text-green-600';
                 await fetchAndDisplayReviews(currentProductId);
-
             } catch (error) {
-                console.error("Error al enviar reseña:", error);
                 reviewStatus.textContent = 'Hubo un error al enviar tu reseña.';
                 reviewStatus.className = 'text-red-600';
             } finally {
