@@ -1,51 +1,111 @@
 <!doctype html>
 <html lang="es" data-theme="dark">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Áurea · Login</title>
-<link rel="stylesheet" href="/styles.css" />
-<script type="module">
-import { initTheme, toggleTheme } from './theme.js';
-import { showToast } from './app.js';
-window.toggleTheme = toggleTheme;
-window.showToast = showToast;
-initTheme();
-</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Áurea · Login</title>
+    <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-<header>
-<div class="nav">
-<a class="brand" href="/index.html"><div class="logo"></div><span>Áurea</span></a>
-<div class="nav-actions">
-<button class="icon-btn" aria-label="Tema" onclick="toggleTheme()">🌓</button>
-</div>
-</div>
-</header>
+    <header>
+        <div class="nav">
+            <a class="brand" href="/index.html">
+                <div class="logo"></div><span>Áurea</span>
+            </a>
+            <div class="nav-actions">
+                <button class="icon-btn" aria-label="Tema" id="theme-toggle">🌓</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="view auth active">
+            <div class="card">
+                <h1>Bienvenido a Áurea</h1>
+                <p class="muted">Accede para explorar moda local y probar prendas con IA.</p>
+                <form class="form" id="login-form">
+                    <label>
+                        <span class="muted">Correo</span>
+                        <input class="input" required type="email" id="email" placeholder="tu@email.com" />
+                    </label>
+                    <label>
+                        <span class="muted">Contraseña</span>
+                        <input class="input" required type="password" id="password" placeholder="••••••••" />
+                    </label>
+                    <button class="btn" type="submit">Iniciar sesión</button>
+                </form>
+                <p class="muted small-text">O continúa con</p>
+                <div class="social-login">
+                    <button class="btn secondary" id="google-login">Google</button>
+                    <button class="btn secondary" id="facebook-login">Facebook</button>
+                </div>
+                 <p class="muted small-text" style="margin-top: 1rem;">¿No tienes cuenta? <a href="/register.html">Regístrate</a></p>
+            </div>
+        </section>
+        <div id="toast-container"></div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+        import { initTheme, toggleTheme } from './theme.js';
+        import { showToast } from './app.js';
+
+        // --- Configuración de Firebase (reemplazar con tus credenciales) ---
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_AUTH_DOMAIN",
+            projectId: "TU_PROJECT_ID",
+            storageBucket: "TU_STORAGE_BUCKET",
+            messagingSenderId: "TU_MESSAGING_SENDER_ID",
+            appId: "TU_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // --- Manejo de Tema ---
+        window.toggleTheme = toggleTheme;
+        initTheme();
+        document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
 
 
-<main>
-<section class="view auth active">
-<div class="card">
-<h1>Bienvenido a Áurea</h1>
-<p class="muted">Accede para explorar moda local y probar prendas con IA.</p>
-<form class="form" onsubmit="event.preventDefault(); localStorage.setItem('aurea_user','demo'); location.href='/index.html'">
-<label>
-<span class="muted">Correo</span>
-<input class="input" required type="email" placeholder="tu@email.com" />
-</label>
-<label>
-<span class="muted">Contraseña</span>
-<input class="input" required type="password" placeholder="••••••••" />
-</label>
-<button class="btn" type="submit">Iniciar sesión</button>
-</form>
-<div style="display:flex; gap:10px; margin-top:10px;">
-<button class="btn secondary" onclick="showToast('Google SSO (demo)')">Google</button>
-<button class="btn secondary" onclick="showToast('Facebook SSO (demo)')">Facebook</button>
-</div>
-</div>
-</section>
-</main>
+        // --- Lógica de Autenticación ---
+        const loginForm = document.getElementById('login-form');
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                showToast('Inicio de sesión exitoso. Redirigiendo...', 'success');
+                setTimeout(() => window.location.href = '/index.html', 1500);
+            } catch (error) {
+                console.error("Error de inicio de sesión:", error);
+                showToast('Error: Credenciales incorrectas.', 'error');
+            }
+        });
+
+        // --- SSO con Google y Facebook ---
+        const googleLoginBtn = document.getElementById('google-login');
+        const facebookLoginBtn = document.getElementById('facebook-login');
+
+        const handleSocialLogin = async (provider) => {
+             try {
+                await signInWithPopup(auth, provider);
+                showToast('Inicio de sesión exitoso. Redirigiendo...', 'success');
+                setTimeout(() => window.location.href = '/index.html', 1500);
+            } catch (error) {
+                console.error("Error de SSO:", error);
+                showToast('Error al iniciar sesión con redes sociales.', 'error');
+            }
+        }
+
+        googleLoginBtn.addEventListener('click', () => handleSocialLogin(new GoogleAuthProvider()));
+        facebookLoginBtn.addEventListener('click', () => handleSocialLogin(new FacebookAuthProvider()));
+
+    </script>
 </body>
 </html>
+
