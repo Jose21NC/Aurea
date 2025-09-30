@@ -137,70 +137,9 @@
                 <!-- Título de la sección de productos -->
                 <h2 class="text-2xl font-bold text-aurea-charcoal mb-6">Novedades</h2>
 
-                <!-- Grid de Productos -->
-                <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    
-                    <!-- Producto 1 -->
-                    <div class="bg-aurea-white rounded-lg overflow-hidden border border-aurea-neutral-gray/50 product-card">
-                        <a href="#">
-                            <img src="https://placehold.co/400x400/D3D3D3/222222?text=Producto+1" alt="Producto 1" class="w-full h-48 sm:h-64 object-cover">
-                        </a>
-                        <div class="p-4">
-                            <h3 class="font-semibold text-md text-aurea-charcoal truncate">Vestido Floral de Verano</h3>
-                            <p class="text-sm text-aurea-charcoal/60 mb-2">Tienda La Amapola</p>
-                            <p class="font-bold text-aurea-charcoal text-lg">C$ 1,200</p>
-                            <button class="mt-3 w-full bg-aurea-gold text-aurea-white text-sm font-bold py-2 px-4 rounded-md hover:bg-aurea-gold/90 transition-colors">
-                                Ver Detalles
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Producto 2 -->
-                    <div class="bg-aurea-white rounded-lg overflow-hidden border border-aurea-neutral-gray/50 product-card">
-                        <a href="#">
-                            <img src="https://placehold.co/400x400/BB9F6F/FFFFFF?text=Producto+2" alt="Producto 2" class="w-full h-48 sm:h-64 object-cover">
-                        </a>
-                        <div class="p-4">
-                            <h3 class="font-semibold text-md text-aurea-charcoal truncate">Café Orgánico de Matagalpa</h3>
-                            <p class="text-sm text-aurea-charcoal/60 mb-2">Finca El Amanecer</p>
-                            <p class="font-bold text-aurea-charcoal text-lg">C$ 350</p>
-                             <button class="mt-3 w-full bg-aurea-gold text-aurea-white text-sm font-bold py-2 px-4 rounded-md hover:bg-aurea-gold/90 transition-colors">
-                                Ver Detalles
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Producto 3 -->
-                    <div class="bg-aurea-white rounded-lg overflow-hidden border border-aurea-neutral-gray/50 product-card">
-                        <a href="#">
-                            <img src="https://placehold.co/400x400/222222/FFFFFF?text=Producto+3" alt="Producto 3" class="w-full h-48 sm:h-64 object-cover">
-                        </a>
-                        <div class="p-4">
-                            <h3 class="font-semibold text-md text-aurea-charcoal truncate">Artesanía de Barro Negro</h3>
-                            <p class="text-sm text-aurea-charcoal/60 mb-2">Manos Nicas</p>
-                            <p class="font-bold text-aurea-charcoal text-lg">C$ 850</p>
-                             <button class="mt-3 w-full bg-aurea-gold text-aurea-white text-sm font-bold py-2 px-4 rounded-md hover:bg-aurea-gold/90 transition-colors">
-                                Ver Detalles
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Producto 4 -->
-                    <div class="bg-aurea-white rounded-lg overflow-hidden border border-aurea-neutral-gray/50 product-card">
-                        <a href="#">
-                            <img src="https://placehold.co/400x400/FFFFFF/222222?text=Producto+4" alt="Producto 4" class="w-full h-48 sm:h-64 object-cover">
-                        </a>
-                        <div class="p-4">
-                            <h3 class="font-semibold text-md text-aurea-charcoal truncate">Camisa de Lino para Hombre</h3>
-                            <p class="text-sm text-aurea-charcoal/60 mb-2">Estilo Urbano</p>
-                            <p class="font-bold text-aurea-charcoal text-lg">C$ 980</p>
-                             <button class="mt-3 w-full bg-aurea-gold text-aurea-white text-sm font-bold py-2 px-4 rounded-md hover:bg-aurea-gold/90 transition-colors">
-                                Ver Detalles
-                            </button>
-                        </div>
-                    </div>
-                     <!-- Puedes añadir más productos aquí -->
-
+                <!-- Grid de Productos (Contenedor vacío que será llenado por JS) -->
+                <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <!-- Los productos se insertarán aquí dinámicamente -->
                 </div>
 
             </div>
@@ -237,7 +176,7 @@
                                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" /></svg>
                             </a>
                             <a href="#" class="text-aurea-neutral-gray hover:text-aurea-gold">
-                                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.345 4.12c.636-.247 1.363-.416 2.427-.465C9.802 3.622 10.156 3.61 12.585 3.61zM12 4.302c-2.392 0-2.693.01-3.64.056-.938.043-1.481.196-1.898.363-.526.22-1.01.523-1.472.986s-.766.946-.986 1.472c-.167.417-.32.96-.363 1.898-.046.947-.056 1.248-.056 3.64s.01 2.693.056 3.64c.043.938.196 1.481.363 1.898.22.526.523 1.01.986 1.472s.946.766 1.472.986c.417.167.96.32 1.898.363.947.046 1.248.056 3.64.056s2.693-.01 3.64-.056c.938-.043 1.481-.196 1.898-.363.526-.22 1.01-.523 1.472-.986s.766-.946.986-1.472c.167-.417.32-.96.363-1.898.046-.947.056-1.248.056-3.64s-.01-2.693-.056-3.64c-.043-.938-.196-1.481-.363-1.898a4.62 4.62 0 00-.986-1.472c-.462-.462-.946-.766-1.472-.986-.417-.167-.96-.32-1.898-.363-.947-.046-1.248-.056-3.64-.056zm0 2.99a4.895 4.895 0 100 9.79 4.895 4.895 0 000-9.79zm0 8.19a3.295 3.295 0 110-6.59 3.295 3.295 0 010 6.59zm6.44-8.83a1.155 1.155 0 100-2.31 1.155 1.155 0 000 2.31z" clip-rule="evenodd" /></svg>
+                                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.345 4.12c.636-.247 1.363-.416 2.427-.465C9.802 3.622 10.156 3.61 12.585 3.61zM12 4.302c-2.392 0-2.693.01-3.64.056-.938.043-1.481.196-1.898.363-.526.22-1.01.523-1.472.986s-.766.946-.986 1.472c-.167.417-.32.96-.363 1.898-.046.947-.056 1.248-.056 3.64s.01 2.693.056 3.64c.043.938.196 1.481.363 1.898.22.526.523 1.01.986 1.472s.946.766 1.472.986c.417.167.96.32 1.898.363.947.046 1.248.056 3.64.056s2.693-.01 3.64-.056c.938-.043 1.481-.196 1.898.363.526-.22 1.01-.523 1.472-.986s.766-.946.986-1.472c.167-.417.32-.96.363-1.898.046-.947.056-1.248-.056-3.64s-.01-2.693-.056-3.64c-.043-.938-.196-1.481-.363-1.898a4.62 4.62 0 00-.986-1.472c-.462-.462-.946-.766-1.472-.986-.417-.167-.96-.32-1.898-.363-.947-.046-1.248-.056-3.64-.056zm0 2.99a4.895 4.895 0 100 9.79 4.895 4.895 0 000-9.79zm0 8.19a3.295 3.295 0 110-6.59 3.295 3.295 0 010 6.59zm6.44-8.83a1.155 1.155 0 100-2.31 1.155 1.155 0 000 2.31z" clip-rule="evenodd" /></svg>
                             </a>
                         </div>
                     </div>
@@ -247,8 +186,92 @@
                 </div>
             </div>
         </footer>
-
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            // --- Base de Datos de Productos ---
+            // En un futuro, estos datos vendrán de Firebase. Por ahora, los definimos aquí.
+            const products = [
+                {
+                    id: 1,
+                    name: "Vestido Floral de Verano",
+                    store: "Tienda La Amapola",
+                    price: 1200,
+                    imageUrl: "https://placehold.co/400x400/D3D3D3/222222?text=Producto+1",
+                    altText: "Foto de un vestido floral de verano"
+                },
+                {
+                    id: 2,
+                    name: "Café Orgánico de Matagalpa",
+                    store: "Finca El Amanecer",
+                    price: 350,
+                    imageUrl: "https://placehold.co/400x400/BB9F6F/FFFFFF?text=Producto+2",
+                    altText: "Bolsa de café orgánico de Matagalpa"
+                },
+                {
+                    id: 3,
+                    name: "Artesanía de Barro Negro",
+                    store: "Manos Nicas",
+                    price: 850,
+                    imageUrl: "https://placehold.co/400x400/222222/FFFFFF?text=Producto+3",
+                    altText: "Jarrón de artesanía de barro negro"
+                },
+                {
+                    id: 4,
+                    name: "Camisa de Lino para Hombre",
+                    store: "Estilo Urbano",
+                    price: 980,
+                    imageUrl: "https://placehold.co/400x400/FFFFFF/222222?text=Producto+4",
+                    altText: "Camisa de lino color neutro para hombre"
+                },
+                {
+                    id: 5,
+                    name: "Mochila de Cuero Genuino",
+                    store: "El Artesano",
+                    price: 2500,
+                    imageUrl: "https://placehold.co/400x400/A0522D/FFFFFF?text=Producto+5",
+                    altText: "Mochila de cuero color café"
+                },
+                {
+                    id: 6,
+                    name: "Juego de Tazas de Cerámica",
+                    store: "Cerámicas del Sol",
+                    price: 650,
+                    imageUrl: "https://placehold.co/400x400/F5F5DC/222222?text=Producto+6",
+                    altText: "Juego de tazas de cerámica pintadas a mano"
+                }
+            ];
+
+            // --- Lógica para Renderizar Productos ---
+            const productGrid = document.getElementById('product-grid');
+
+            if (productGrid) {
+                // Genera el HTML para cada producto y lo une en un solo string
+                const productHTML = products.map(product => `
+                    <div class="bg-aurea-white rounded-lg overflow-hidden border border-aurea-neutral-gray/50 product-card">
+                        <a href="#">
+                            <img src="${product.imageUrl}" alt="${product.altText}" class="w-full h-48 sm:h-64 object-cover">
+                        </a>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-md text-aurea-charcoal truncate">${product.name}</h3>
+                            <p class="text-sm text-aurea-charcoal/60 mb-2">${product.store}</p>
+                            <p class="font-bold text-aurea-charcoal text-lg">C$ ${product.price.toLocaleString()}</p>
+                            <button class="mt-3 w-full bg-aurea-gold text-aurea-white text-sm font-bold py-2 px-4 rounded-md hover:bg-aurea-gold/90 transition-colors">
+                                Ver Detalles
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Inserta el HTML generado en el contenedor
+                productGrid.innerHTML = productHTML;
+            }
+
+        });
+    </script>
 
 </body>
 </html>
+
