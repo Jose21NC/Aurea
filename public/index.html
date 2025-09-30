@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Áurea - Marketplace Local</title>
+    <title>Áurea - Marketplace de Confianza en Nicaragua</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -33,40 +33,23 @@
     </script>
 
     <style>
-        /* Estilos personalizados para complementar Tailwind */
         body {
-            background-color: theme('colors.aurea-white');
-            color: theme('colors.aurea-charcoal');
-            font-family: theme('fontFamily.sans');
-        }
-        .logo-path {
-            transition: all 0.3s ease-in-out;
-        }
-        .group:hover .logo-path {
-            stroke: theme('colors.aurea-charcoal');
-        }
-        .product-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            font-family: 'Inter', sans-serif;
+            background-color: #FFFFFF;
         }
     </style>
 </head>
-<body class="antialiased">
+<body class="text-aurea-charcoal antialiased">
 
-    <!-- Contenedor principal -->
-    <div id="app" class="min-h-screen flex flex-col">
-
-        <!-- Header -->
-        <header class="bg-aurea-white border-b border-aurea-neutral-gray/60 sticky top-0 z-50">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-20">
-                    <!-- Logo -->
-                    <a href="#" class="flex items-center space-x-2 group">
+    <!-- Encabezado -->
+    <header class="bg-aurea-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                     <a href="index.html" class="flex items-center justify-center space-x-2 group">
                         <svg class="h-8 w-8 text-aurea-charcoal" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path class="logo-path" d="M5 6.25C5 5.00736 6.00736 4 7.25 4H16.75C17.9926 4 19 5.00736 19 6.25V17.75C19 18.9926 17.9926 20 16.75 20H7.25C6.00736 20 5 18.9926 5 17.75V6.25Z" stroke="#222222" stroke-width="1.5"/>
+                            <path d="M5 6.25C5 5.00736 6.00736 4 7.25 4H16.75C17.9926 4 19 5.00736 19 6.25V17.75C19 18.9926 17.9926 20 16.75 20H7.25C6.00736 20 5 18.9926 5 17.75V6.25Z" stroke="#222222" stroke-width="1.5"/>
                             <path d="M9 4V2" stroke="#222222" stroke-width="1.5" stroke-linecap="round"/>
                             <path d="M15 4V2" stroke="#222222" stroke-width="1.5" stroke-linecap="round"/>
                             <path d="M12 10V16" stroke="#BB9F6F" stroke-width="2" stroke-linecap="round"/>
@@ -74,204 +57,128 @@
                         </svg>
                         <span class="text-2xl font-bold text-aurea-charcoal tracking-tight">Áurea</span>
                     </a>
+                </div>
 
-                    <!-- Navegación y Búsqueda (Desktop) -->
-                    <div class="hidden lg:flex items-center space-x-8">
-                        <nav class="flex items-center space-x-6 text-sm font-medium">
-                            <a href="#" class="text-aurea-charcoal hover:text-aurea-gold transition-colors">Tiendas</a>
-                            <a href="#" class="text-aurea-charcoal hover:text-aurea-gold transition-colors">Categorías</a>
-                            <a href="#" class="text-aurea-charcoal hover:text-aurea-gold transition-colors">Ofertas</a>
-                            <a href="#" class="text-aurea-charcoal hover:text-aurea-gold transition-colors">Nosotros</a>
-                        </nav>
-                    </div>
-
-                    <!-- Iconos de Acción -->
-                    <div class="flex items-center space-x-4">
-                         <button class="text-aurea-charcoal hover:text-aurea-gold transition-colors">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        </button>
-                        <button class="text-aurea-charcoal hover:text-aurea-gold transition-colors">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                        </button>
-                        <button class="relative text-aurea-charcoal hover:text-aurea-gold transition-colors">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4z"></path></svg>
-                            <span class="absolute -top-2 -right-2 bg-aurea-gold text-aurea-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">2</span>
-                        </button>
-                        <button class="lg:hidden text-aurea-charcoal hover:text-aurea-gold transition-colors">
-                           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                        </button>
+                <!-- Navegación principal -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#" class="text-aurea-charcoal hover:text-aurea-gold px-3 py-2 rounded-md text-sm font-medium transition">Inicio</a>
+                        <a href="#" class="text-aurea-charcoal hover:text-aurea-gold px-3 py-2 rounded-md text-sm font-medium transition">Tienda</a>
+                        <a href="#" class="text-aurea-charcoal hover:text-aurea-gold px-3 py-2 rounded-md text-sm font-medium transition">Nosotros</a>
                     </div>
                 </div>
-                 <!-- Navegación (Mobile) -->
-                 <div class="lg:hidden border-t border-aurea-neutral-gray/60 py-3">
-                    <nav class="flex items-center justify-center space-x-6 text-sm font-medium">
-                        <a href="#" class="text-aurea-charcoal hover:text-aurea-gold transition-colors">Tiendas</a>
-                        <a href="#" class="text-aurea-charcoal hover:text-aurea-gold transition-colors">Categorías</a>
-                        <a href="#" class="text-aurea-charcoal hover:text-aurea-gold transition-colors">Ofertas</a>
-                    </nav>
+
+                <!-- Botones de Autenticación -->
+                <div class="hidden md:block">
+                    <div class="ml-4 flex items-center md:ml-6 space-x-2">
+                        <a href="login.html" class="text-aurea-charcoal hover:bg-aurea-neutral-gray/50 font-medium py-2 px-4 rounded-lg text-sm transition">Iniciar Sesión</a>
+                        <a href="register.html" class="bg-aurea-charcoal text-aurea-white font-medium hover:bg-aurea-charcoal/90 py-2 px-4 rounded-lg text-sm transition shadow-sm">Registrarse</a>
+                    </div>
+                </div>
+                 <!-- Menú Móvil (Hamburguesa) -->
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" class="bg-aurea-white inline-flex items-center justify-center p-2 rounded-md text-aurea-charcoal hover:text-aurea-gold hover:bg-aurea-neutral-gray/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-aurea-gold" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Abrir menú principal</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
                 </div>
             </div>
-        </header>
+        </nav>
+    </header>
 
-        <!-- Contenido Principal -->
-        <main class="flex-grow">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <main>
+        <!-- Sección de Héroe -->
+        <div class="bg-aurea-neutral-gray/20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+                <h1 class="text-4xl font-extrabold text-aurea-charcoal sm:text-5xl md:text-6xl tracking-tight">
+                    El marketplace de <span class="text-aurea-gold">confianza</span> en Nicaragua
+                </h1>
+                <p class="mt-6 max-w-2xl mx-auto text-lg text-aurea-charcoal/80">
+                    Conectamos a los mejores proveedores locales contigo, a través de una experiencia de compra digital, innovadora y segura.
+                </p>
+                <div class="mt-8 flex justify-center">
+                    <a href="#" class="inline-block bg-aurea-charcoal text-aurea-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-aurea-charcoal/90 transition transform hover:-translate-y-1">
+                        Explorar Tienda
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Catálogo de Productos -->
+        <div class="bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <h2 class="text-3xl font-bold tracking-tight text-aurea-charcoal text-center">Nuestros Productos</h2>
+                <div id="product-grid" class="mt-10 grid grid-cols-1 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+                    <!-- Los productos se cargarán aquí dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pie de Página -->
+    <footer class="bg-aurea-charcoal text-aurea-white">
+        <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2024 Áurea. Todos los derechos reservados.</p>
+            <p class="text-sm text-aurea-neutral-gray mt-2">Transformando el comercio en Nicaragua.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase y Lógica de Productos -->
+    <script type="module">
+        // Importa la instancia de Firestore
+        import { db } from './firebase-config.js';
+        // Importa las funciones necesarias de Firestore
+        import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const productGrid = document.getElementById('product-grid');
+
+        // Función para renderizar los productos en el HTML
+        const displayProducts = (products) => {
+            productGrid.innerHTML = ''; // Limpia el contenedor (importante para quitar el mensaje de carga)
+            products.forEach(product => {
+                const productCard = `
+                    <a href="#" class="group">
+                        <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
+                            <img src="${product.imageUrl || 'https://placehold.co/400x500/d3d3d3/222222?text=Producto'}" alt="${product.name}" class="h-full w-full object-cover object-center group-hover:opacity-75 transition">
+                        </div>
+                        <h3 class="mt-4 text-sm text-gray-700">${product.category}</h3>
+                        <p class="mt-1 text-lg font-medium text-gray-900">${product.name}</p>
+                        <p class="mt-1 font-medium text-aurea-gold">$${product.price ? product.price.toFixed(2) : '0.00'}</p>
+                    </a>
+                `;
+                productGrid.innerHTML += productCard;
+            });
+        };
+
+        // Función para obtener los productos desde Firestore
+        const fetchAndDisplayProducts = async () => {
+            // Muestra un indicador de carga mientras se obtienen los datos
+            productGrid.innerHTML = '<p class="text-center col-span-full text-aurea-charcoal/70">Cargando productos...</p>';
+
+            try {
+                const querySnapshot = await getDocs(collection(db, "products"));
+                const products = [];
+                querySnapshot.forEach((doc) => {
+                    products.push({ id: doc.id, ...doc.data() });
+                });
                 
-                <!-- Hero Section -->
-                <div class="bg-aurea-neutral-gray/20 rounded-lg p-8 md:p-12 mb-12 flex flex-col md:flex-row items-center">
-                    <div class="md:w-1/2 text-center md:text-left mb-8 md:mb-0">
-                        <h1 class="text-3xl md:text-5xl font-bold text-aurea-charcoal leading-tight mb-4">Talento local, confianza global.</h1>
-                        <p class="text-lg text-aurea-charcoal/80 mb-6">Descubre lo mejor de Nicaragua en un solo lugar. Apoya a los negocios locales y compra con la seguridad que mereces.</p>
-                        <a href="#" class="inline-block bg-aurea-charcoal text-aurea-white font-bold py-3 px-8 rounded-lg hover:bg-aurea-charcoal/90 transition-colors">Explorar ahora</a>
-                    </div>
-                    <div class="md:w-1/2 flex justify-center">
-                        <!-- Placeholder para una imagen o ilustración atractiva -->
-                        <div class="bg-aurea-gold/20 w-72 h-72 rounded-full flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-32 h-32 text-aurea-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Título de la sección de productos -->
-                <h2 class="text-2xl font-bold text-aurea-charcoal mb-6">Novedades</h2>
-
-                <!-- Grid de Productos (Contenedor vacío que será llenado por JS) -->
-                <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    <!-- Los productos se insertarán aquí dinámicamente -->
-                </div>
-
-            </div>
-        </main>
-
-        <!-- Footer -->
-        <footer class="bg-aurea-charcoal text-aurea-white">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <div>
-                        <h4 class="text-lg font-semibold mb-4">Áurea</h4>
-                        <p class="text-sm text-aurea-neutral-gray">Conectando el talento de Nicaragua con el mundo digital.</p>
-                    </div>
-                    <div>
-                        <h5 class="font-semibold mb-4">Comprar</h5>
-                        <ul class="space-y-2 text-sm text-aurea-neutral-gray">
-                            <li><a href="#" class="hover:text-aurea-gold">Tiendas</a></li>
-                            <li><a href="#" class="hover:text-aurea-gold">Categorías</a></li>
-                            <li><a href="#" class="hover:text-aurea-gold">Cómo funciona</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h5 class="font-semibold mb-4">Vender</h5>
-                        <ul class="space-y-2 text-sm text-aurea-neutral-gray">
-                            <li><a href="#" class="hover:text-aurea-gold">Crea tu tienda</a></li>
-                            <li><a href="#" class="hover:text-aurea-gold">Planes y precios</a></li>
-                            <li><a href="#" class="hover:text-aurea-gold">Historias de éxito</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h5 class="font-semibold mb-4">Síguenos</h5>
-                        <div class="flex space-x-4">
-                            <a href="#" class="text-aurea-neutral-gray hover:text-aurea-gold">
-                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clip-rule="evenodd" /></svg>
-                            </a>
-                            <a href="#" class="text-aurea-neutral-gray hover:text-aurea-gold">
-                                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.024.06 1.378.06 3.808s-.012 2.784-.06 3.808c-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.024.048-1.378.06-3.808.06s-2.784-.012-3.808-.06c-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.048-1.024-.06-1.378-.06-3.808s.012-2.784.06-3.808c.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 016.345 4.12c.636-.247 1.363-.416 2.427-.465C9.802 3.622 10.156 3.61 12.585 3.61zM12 4.302c-2.392 0-2.693.01-3.64.056-.938.043-1.481.196-1.898.363-.526.22-1.01.523-1.472.986s-.766.946-.986 1.472c-.167.417-.32.96-.363 1.898-.046.947-.056 1.248-.056 3.64s.01 2.693.056 3.64c.043.938.196 1.481.363 1.898.22.526.523 1.01.986 1.472s.946.766 1.472.986c.417.167.96.32 1.898.363.947.046 1.248.056 3.64.056s2.693-.01 3.64-.056c.938-.043 1.481-.196 1.898.363.526-.22 1.01-.523 1.472-.986s.766-.946.986-1.472c.167-.417.32-.96.363-1.898.046-.947.056-1.248-.056-3.64s-.01-2.693-.056-3.64c-.043-.938-.196-1.481-.363-1.898a4.62 4.62 0 00-.986-1.472c-.462-.462-.946-.766-1.472-.986-.417-.167-.96-.32-1.898-.363-.947-.046-1.248-.056-3.64-.056zm0 2.99a4.895 4.895 0 100 9.79 4.895 4.895 0 000-9.79zm0 8.19a3.295 3.295 0 110-6.59 3.295 3.295 0 010 6.59zm6.44-8.83a1.155 1.155 0 100-2.31 1.155 1.155 0 000 2.31z" clip-rule="evenodd" /></svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-8 border-t border-aurea-neutral-gray/30 pt-8 text-center text-sm text-aurea-neutral-gray">
-                    <p>&copy; 2024 Áurea. Todos los derechos reservados. Un proyecto con orgullo nicaragüense.</p>
-                </div>
-            </div>
-        </footer>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            
-            // --- Base de Datos de Productos ---
-            // En un futuro, estos datos vendrán de Firebase. Por ahora, los definimos aquí.
-            const products = [
-                {
-                    id: 1,
-                    name: "Vestido Floral de Verano",
-                    store: "Tienda La Amapola",
-                    price: 1200,
-                    imageUrl: "https://placehold.co/400x400/D3D3D3/222222?text=Producto+1",
-                    altText: "Foto de un vestido floral de verano"
-                },
-                {
-                    id: 2,
-                    name: "Café Orgánico de Matagalpa",
-                    store: "Finca El Amanecer",
-                    price: 350,
-                    imageUrl: "https://placehold.co/400x400/BB9F6F/FFFFFF?text=Producto+2",
-                    altText: "Bolsa de café orgánico de Matagalpa"
-                },
-                {
-                    id: 3,
-                    name: "Artesanía de Barro Negro",
-                    store: "Manos Nicas",
-                    price: 850,
-                    imageUrl: "https://placehold.co/400x400/222222/FFFFFF?text=Producto+3",
-                    altText: "Jarrón de artesanía de barro negro"
-                },
-                {
-                    id: 4,
-                    name: "Camisa de Lino para Hombre",
-                    store: "Estilo Urbano",
-                    price: 980,
-                    imageUrl: "https://placehold.co/400x400/FFFFFF/222222?text=Producto+4",
-                    altText: "Camisa de lino color neutro para hombre"
-                },
-                {
-                    id: 5,
-                    name: "Mochila de Cuero Genuino",
-                    store: "El Artesano",
-                    price: 2500,
-                    imageUrl: "https://placehold.co/400x400/A0522D/FFFFFF?text=Producto+5",
-                    altText: "Mochila de cuero color café"
-                },
-                {
-                    id: 6,
-                    name: "Juego de Tazas de Cerámica",
-                    store: "Cerámicas del Sol",
-                    price: 650,
-                    imageUrl: "https://placehold.co/400x400/F5F5DC/222222?text=Producto+6",
-                    altText: "Juego de tazas de cerámica pintadas a mano"
+                if(products.length === 0){
+                    productGrid.innerHTML = '<p class="text-center col-span-full text-aurea-charcoal/70">No hay productos disponibles en este momento.</p>';
+                } else {
+                    displayProducts(products);
                 }
-            ];
 
-            // --- Lógica para Renderizar Productos ---
-            const productGrid = document.getElementById('product-grid');
-
-            if (productGrid) {
-                // Genera el HTML para cada producto y lo une en un solo string
-                const productHTML = products.map(product => `
-                    <div class="bg-aurea-white rounded-lg overflow-hidden border border-aurea-neutral-gray/50 product-card">
-                        <a href="#">
-                            <img src="${product.imageUrl}" alt="${product.altText}" class="w-full h-48 sm:h-64 object-cover">
-                        </a>
-                        <div class="p-4">
-                            <h3 class="font-semibold text-md text-aurea-charcoal truncate">${product.name}</h3>
-                            <p class="text-sm text-aurea-charcoal/60 mb-2">${product.store}</p>
-                            <p class="font-bold text-aurea-charcoal text-lg">C$ ${product.price.toLocaleString()}</p>
-                            <button class="mt-3 w-full bg-aurea-gold text-aurea-white text-sm font-bold py-2 px-4 rounded-md hover:bg-aurea-gold/90 transition-colors">
-                                Ver Detalles
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
-
-                // Inserta el HTML generado en el contenedor
-                productGrid.innerHTML = productHTML;
+            } catch (error) {
+                console.error("Error al obtener los productos: ", error);
+                productGrid.innerHTML = '<p class="text-center col-span-full text-red-600 font-semibold">Error al cargar los productos. Por favor, intenta de nuevo más tarde.</p>';
             }
+        };
 
-        });
+        // Llama a la función para obtener y mostrar los productos cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', fetchAndDisplayProducts);
     </script>
-
 </body>
 </html>
 

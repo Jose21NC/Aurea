@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - Áurea</title>
+    <title>Crear Cuenta - Áurea</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -57,22 +57,31 @@
             </a>
         </div>
 
-        <!-- Card de Login -->
+        <!-- Card de Registro -->
         <div class="w-full max-w-md bg-aurea-white rounded-lg shadow-lg p-8">
-            <h2 class="text-2xl font-bold text-center text-aurea-charcoal mb-2">Bienvenido de Vuelta</h2>
-            <p class="text-center text-aurea-charcoal/70 mb-8">Inicia sesión para continuar.</p>
+            <h2 class="text-2xl font-bold text-center text-aurea-charcoal mb-2">Crea tu Cuenta</h2>
+            <p class="text-center text-aurea-charcoal/70 mb-8">Únete a la comunidad de Áurea.</p>
             
-            <!-- Contenedor para mensajes de éxito -->
+             <!-- Contenedor para mensajes de éxito -->
             <div id="success-message" class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg relative mb-6" role="alert">
                 <span class="block sm:inline"></span>
             </div>
-            <!-- Contenedor para mensajes de error -->
+             <!-- Contenedor para mensajes de error -->
             <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6" role="alert">
                 <span class="block sm:inline"></span>
             </div>
             
-            <form id="login-form">
+            <form id="register-form">
                 <div class="space-y-6">
+                    <!-- Campo de Nombre Completo -->
+                    <div>
+                        <label for="fullname" class="block text-sm font-medium text-aurea-charcoal">Nombre Completo</label>
+                        <div class="mt-1">
+                            <input id="fullname" name="fullname" type="text" autocomplete="name" required
+                                   class="w-full px-3 py-2 border border-aurea-neutral-gray rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-aurea-gold focus:border-aurea-gold transition">
+                        </div>
+                    </div>
+
                     <!-- Campo de Correo Electrónico -->
                     <div>
                         <label for="email" class="block text-sm font-medium text-aurea-charcoal">Correo Electrónico</label>
@@ -86,26 +95,26 @@
                     <div>
                          <label for="password" class="block text-sm font-medium text-aurea-charcoal">Contraseña</label>
                         <div class="mt-1">
-                            <input id="password" name="password" type="password" autocomplete="current-password" required
+                            <input id="password" name="password" type="password" autocomplete="new-password" required
                                    class="w-full px-3 py-2 border border-aurea-neutral-gray rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-aurea-gold focus:border-aurea-gold transition">
                         </div>
                     </div>
                     
-                    <!-- Botón de Iniciar Sesión -->
+                    <!-- Botón de Registrarse -->
                     <div>
                         <button type="submit"
                                 class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-aurea-white bg-aurea-charcoal hover:bg-aurea-charcoal/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-aurea-charcoal transition">
-                            Iniciar Sesión
+                            Crear Cuenta
                         </button>
                     </div>
                 </div>
             </form>
 
-            <!-- Link para Registrarse -->
+            <!-- Link para Iniciar Sesión -->
             <p class="mt-8 text-center text-sm text-aurea-charcoal/70">
-                ¿No tienes una cuenta?
-                <a href="register.html" class="font-medium text-aurea-gold hover:text-aurea-gold/80 transition">
-                    Regístrate aquí
+                ¿Ya tienes una cuenta?
+                <a href="login.html" class="font-medium text-aurea-gold hover:text-aurea-gold/80 transition">
+                    Inicia sesión aquí
                 </a>
             </p>
         </div>
@@ -118,63 +127,83 @@
 
     <!-- Firebase SDKs -->
     <script type="module">
-        // Importa la configuración de Firebase
-        import { auth } from './firebase-config.js';
-        // Importa la función de inicio de sesión
-        import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        // Importa la configuración de Firebase de Aurea
+        import { auth, db } from './firebase-config.js';
+        // Importa las funciones que necesitas de los SDKs
+        import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
       
-        // Lógica de Inicio de Sesión
-        const loginForm = document.getElementById('login-form');
+        // Lógica de Registro
+        const registerForm = document.getElementById('register-form');
         const errorMessageDiv = document.getElementById('error-message');
         const successMessageDiv = document.getElementById('success-message');
 
-        loginForm.addEventListener('submit', (e) => {
+        registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const email = loginForm.email.value;
-            const password = loginForm.password.value;
-            const submitButton = loginForm.querySelector('button[type="submit"]');
+            const email = registerForm.email.value;
+            const password = registerForm.password.value;
+            const fullname = registerForm.fullname.value;
 
-            // Feedback visual para el usuario
+            const submitButton = registerForm.querySelector('button[type="submit"]');
             submitButton.disabled = true;
-            submitButton.textContent = 'Iniciando sesión...';
+            submitButton.textContent = 'Creando cuenta...';
+            
+            // Oculta mensajes previos
             errorMessageDiv.classList.add('hidden');
             successMessageDiv.classList.add('hidden');
 
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(async (userCredential) => {
                     const user = userCredential.user;
-                    console.log('Usuario ha iniciado sesión:', user);
+                    console.log('Usuario registrado con éxito:', user);
 
-                    // Muestra mensaje de éxito y redirige
-                    submitButton.textContent = '¡Éxito!';
-                    submitButton.classList.remove('bg-aurea-charcoal', 'hover:bg-aurea-charcoal/90');
-                    submitButton.classList.add('bg-green-600');
-                    successMessageDiv.querySelector('span').textContent = 'Inicio de sesión exitoso. Redirigiendo...';
-                    successMessageDiv.classList.remove('hidden');
+                    try {
+                        await setDoc(doc(db, "users", user.uid), {
+                            fullname: fullname,
+                            email: email,
+                            createdAt: new Date()
+                        });
+                        console.log("Datos del usuario guardados en Firestore");
+                        
+                        // Muestra un mensaje de éxito y cambia el estilo del botón
+                        submitButton.textContent = '¡Éxito!';
+                        submitButton.classList.remove('bg-aurea-charcoal', 'hover:bg-aurea-charcoal/90');
+                        submitButton.classList.add('bg-green-600');
+                        successMessageDiv.querySelector('span').textContent = 'Cuenta creada con éxito. Redirigiendo...';
+                        successMessageDiv.classList.remove('hidden');
 
-                    setTimeout(() => {
-                        window.location.assign('./index.html');
-                    }, 1500);
+                        // Redirige después de un breve momento para que el usuario vea el mensaje
+                        setTimeout(() => {
+                            console.log("Redirección iniciada hacia ./index.html");
+                            window.location.assign('./index.html');
+                        }, 1500); // 1.5 segundos de espera
+
+                    } catch (firestoreError) {
+                        console.error("Error al guardar los datos del usuario en Firestore:", firestoreError);
+                        errorMessageDiv.querySelector('span').textContent = "Tu cuenta fue creada, pero hubo un problema al guardar tus datos. Por favor, contacta a soporte.";
+                        errorMessageDiv.classList.remove('hidden');
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Crear Cuenta';
+                    }
                 })
                 .catch((error) => {
                     const errorCode = error.code;
-                    let friendlyMessage = "Ocurrió un error. Revisa tus credenciales.";
-
-                    // Errores comunes de inicio de sesión
-                    if (errorCode === 'auth/user-not-found' || errorCode === 'auth/wrong-password' || errorCode === 'auth/invalid-credential') {
-                        friendlyMessage = 'El correo electrónico o la contraseña son incorrectos.';
+                    let friendlyMessage = "Ocurrió un error desconocido. Inténtalo de nuevo.";
+                    
+                    if (errorCode === 'auth/email-already-in-use') {
+                        friendlyMessage = 'Este correo electrónico ya está en uso. Por favor, intenta con otro.';
                     } else if (errorCode === 'auth/invalid-email') {
                         friendlyMessage = 'El formato del correo electrónico no es válido.';
+                    } else if (errorCode === 'auth/weak-password') {
+                        friendlyMessage = 'La contraseña es muy débil. Debe tener al menos 6 caracteres.';
                     }
                     
-                    console.error("Error en inicio de sesión:", error);
+                    console.error("Error en el registro:", error);
                     errorMessageDiv.querySelector('span').textContent = friendlyMessage;
                     errorMessageDiv.classList.remove('hidden');
-                    
-                    // Restaura el botón para que el usuario pueda intentarlo de nuevo
                     submitButton.disabled = false;
-                    submitButton.textContent = 'Iniciar Sesión';
+                    submitButton.textContent = 'Crear Cuenta';
                 });
         });
     </script>

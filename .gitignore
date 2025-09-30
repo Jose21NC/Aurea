@@ -1,1 +1,2 @@
-.env
+# Firebase configuration file
+firebaseconfig.js
