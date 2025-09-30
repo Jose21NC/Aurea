@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Producto - Áurea</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Rethink Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+    
+    <!-- Configuración de Tailwind con la paleta de colores de Áurea -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['"Rethink Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        'aurea-gold': '#BB9F6F',
+                        'aurea-charcoal': '#222222',
+                        'aurea-white': '#FFFFFF',
+                        'aurea-neutral-gray': '#D3D3D3',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: '"Rethink Sans"', sans-serif;
+            background-color: #FFFFFF;
+        }
+    </style>
+</head>
+<body class="text-aurea-charcoal antialiased">
+
+    <!-- Encabezado -->
+    <header class="bg-aurea-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                     <a href="index.html" class="flex items-center justify-center space-x-2 group">
+                        <svg class="h-8 w-8 text-aurea-charcoal" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5 6.25C5 5.00736 6.00736 4 7.25 4H16.75C17.9926 4 19 5.00736 19 6.25V17.75C19 18.9926 17.9926 20 16.75 20H7.25C6.00736 20 5 18.9926 5 17.75V6.25Z" stroke="#222222" stroke-width="1.5"/>
+                            <path d="M9 4V2" stroke="#222222" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M15 4V2" stroke="#222222" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M12 10V16" stroke="#BB9F6F" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M9 13H15" stroke="#BB9F6F" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <span class="text-2xl font-bold text-aurea-charcoal tracking-tight">Áurea</span>
+                    </a>
+                </div>
+
+                <!-- Navegación principal -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="index.html" class="text-aurea-charcoal hover:text-aurea-gold px-3 py-2 rounded-md text-sm font-medium transition">Inicio</a>
+                        <a href="#" class="text-aurea-charcoal hover:text-aurea-gold px-3 py-2 rounded-md text-sm font-medium transition">Tienda</a>
+                        <a href="#" class="text-aurea-charcoal hover:text-aurea-gold px-3 py-2 rounded-md text-sm font-medium transition">Nosotros</a>
+                    </div>
+                </div>
+
+                <!-- Botones de Autenticación -->
+                <div class="hidden md:block">
+                    <div class="ml-4 flex items-center md:ml-6 space-x-2">
+                        <a href="login.html" class="text-aurea-charcoal hover:bg-aurea-neutral-gray/50 font-medium py-2 px-4 rounded-lg text-sm transition">Iniciar Sesión</a>
+                        <a href="register.html" class="bg-aurea-charcoal text-aurea-white font-medium hover:bg-aurea-charcoal/90 py-2 px-4 rounded-lg text-sm transition shadow-sm">Registrarse</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Contenedor del detalle del producto -->
+        <div id="product-detail-container" class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+            <!-- El contenido se cargará aquí -->
+        </div>
+    </main>
+
+    <!-- Pie de Página -->
+    <footer class="bg-aurea-charcoal text-aurea-white mt-12">
+        <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2024 Áurea. Todos los derechos reservados.</p>
+            <p class="text-sm text-aurea-neutral-gray mt-2">Transformando el comercio en Nicaragua.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase y Lógica de Producto -->
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const productDetailContainer = document.getElementById('product-detail-container');
+
+        const displayProductDetails = (product) => {
+            productDetailContainer.innerHTML = `
+                <!-- Columna de la Imagen -->
+                <div>
+                    <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200">
+                        <img src="${product.imageUrl || 'https://placehold.co/600x600/d3d3d3/222222?text=Producto'}" alt="${product.name}" class="h-full w-full object-cover object-center">
+                    </div>
+                </div>
+
+                <!-- Columna de la Información -->
+                <div class="space-y-6">
+                    <div>
+                        <p class="text-sm font-medium text-aurea-charcoal/60">${product.category || 'Categoría'}</p>
+                        <h1 class="text-3xl font-bold tracking-tight text-aurea-charcoal mt-2">${product.name || 'Nombre del Producto'}</h1>
+                    </div>
+                    <div>
+                        <p class="text-4xl font-bold text-aurea-gold">$${product.price ? product.price.toFixed(2) : '0.00'}</p>
+                    </div>
+                    <div class="space-y-4 text-aurea-charcoal/80">
+                        <h2 class="text-lg font-semibold text-aurea-charcoal">Descripción</h2>
+                        <p>${product.description || 'No hay descripción disponible para este producto.'}</p>
+                    </div>
+                    <div>
+                        <button class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-aurea-white bg-aurea-charcoal hover:bg-aurea-charcoal/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-aurea-charcoal transition">
+                            Añadir al Carrito
+                        </button>
+                    </div>
+                </div>
+            `;
+        };
+
+        const fetchProductDetails = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+
+            if (!productId) {
+                productDetailContainer.innerHTML = '<p class="text-center col-span-full text-red-600 font-semibold">No se ha especificado un producto.</p>';
+                return;
+            }
+
+            productDetailContainer.innerHTML = '<p class="text-center col-span-full text-aurea-charcoal/70">Cargando producto...</p>';
+
+            try {
+                const docRef = doc(db, "products", productId);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    displayProductDetails({ id: docSnap.id, ...docSnap.data() });
+                } else {
+                    productDetailContainer.innerHTML = '<p class="text-center col-span-full text-aurea-charcoal/70">Producto no encontrado.</p>';
+                }
+            } catch (error) {
+                console.error("Error al obtener el producto:", error);
+                productDetailContainer.innerHTML = '<p class="text-center col-span-full text-red-600 font-semibold">Error al cargar el producto.</p>';
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', fetchProductDetails);
+    </script>
+</body>
+</html>
+

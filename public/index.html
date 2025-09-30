@@ -8,10 +8,10 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: Inter -->
+    <!-- Google Fonts: Rethink Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
     
     <!-- Configuración de Tailwind con la paleta de colores de Áurea -->
     <script>
@@ -19,7 +19,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        'sans': ['Inter', 'sans-serif'],
+                        'sans': ['"Rethink Sans"', 'sans-serif'],
                     },
                     colors: {
                         'aurea-gold': '#BB9F6F',
@@ -34,7 +34,7 @@
 
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: '"Rethink Sans"', sans-serif;
             background-color: #FFFFFF;
         }
     </style>
@@ -69,7 +69,7 @@
                 </div>
 
                 <!-- Botones de Autenticación -->
-                <div class="hidden md:block">
+                <div id="auth-buttons" class="hidden md:block">
                     <div class="ml-4 flex items-center md:ml-6 space-x-2">
                         <a href="login.html" class="text-aurea-charcoal hover:bg-aurea-neutral-gray/50 font-medium py-2 px-4 rounded-lg text-sm transition">Iniciar Sesión</a>
                         <a href="register.html" class="bg-aurea-charcoal text-aurea-white font-medium hover:bg-aurea-charcoal/90 py-2 px-4 rounded-lg text-sm transition shadow-sm">Registrarse</a>
@@ -93,21 +93,60 @@
         <div class="bg-aurea-neutral-gray/20">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
                 <h1 class="text-4xl font-extrabold text-aurea-charcoal sm:text-5xl md:text-6xl tracking-tight">
-                    El marketplace de <span class="text-aurea-gold">confianza</span> en Nicaragua
+                    Revolucionando la forma de <span class="text-aurea-gold">vender y comprar</span> en Nicaragua
                 </h1>
-                <p class="mt-6 max-w-2xl mx-auto text-lg text-aurea-charcoal/80">
-                    Conectamos a los mejores proveedores locales contigo, a través de una experiencia de compra digital, innovadora y segura.
+                <p class="mt-6 max-w-3xl mx-auto text-lg text-aurea-charcoal/80">
+                    Imagina poder probarte un producto desde tu celular con un probador virtual de IA. Áurea es el primer marketplace en el país que une proveedores y clientes a través de una experiencia digital intuitiva y confiable.
                 </p>
                 <div class="mt-8 flex justify-center">
-                    <a href="#" class="inline-block bg-aurea-charcoal text-aurea-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-aurea-charcoal/90 transition transform hover:-translate-y-1">
+                    <a href="#product-catalog" class="inline-block bg-aurea-charcoal text-aurea-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-aurea-charcoal/90 transition transform hover:-translate-y-1">
                         Explorar Tienda
                     </a>
                 </div>
             </div>
         </div>
 
+        <!-- Nueva sección: ¿Por qué Áurea? -->
+        <div class="bg-white py-16">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-aurea-charcoal">La herramienta para la digitalización accesible y estratégica.</h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-aurea-charcoal/70">Áurea resuelve los desafíos clave del comercio digital en Nicaragua.</p>
+                </div>
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-10">
+                    <div class="text-center p-6 border border-aurea-neutral-gray/50 rounded-lg">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-aurea-gold text-white mx-auto">
+                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286Zm0 13.036h.008v.008h-.008v-.008Z" />
+                            </svg>
+                        </div>
+                        <h3 class="mt-5 text-lg font-semibold text-aurea-charcoal">Confianza Aumentada</h3>
+                        <p class="mt-2 text-base text-aurea-charcoal/70">Nuestro probador virtual con IA permite a los clientes visualizar los productos antes de comprar, aumentando la confianza y reduciendo las devoluciones hasta en un 25%.</p>
+                    </div>
+                     <div class="text-center p-6 border border-aurea-neutral-gray/50 rounded-lg">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-aurea-gold text-white mx-auto">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
+                            </svg>
+                        </div>
+                        <h3 class="mt-5 text-lg font-semibold text-aurea-charcoal">Gestión Optimizada</h3>
+                        <p class="mt-2 text-base text-aurea-charcoal/70">Un sistema de gestión automatizada de inventarios y ventas, diseñado para que los negocios optimicen sus procesos y ganen eficiencia.</p>
+                    </div>
+                     <div class="text-center p-6 border border-aurea-neutral-gray/50 rounded-lg">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-aurea-gold text-white mx-auto">
+                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m-7.5-2.962a3.752 3.752 0 0 1-4.493 3.725 3.753 3.753 0 0 1-4.493-3.725M18 18.72v-5.25A3.375 3.375 0 0 0 14.625 10h-1.5a3.375 3.375 0 0 0-3.375 3.375v5.25" />
+                            </svg>
+                        </div>
+                        <h3 class="mt-5 text-lg font-semibold text-aurea-charcoal">Comunidad y Crecimiento</h3>
+                        <p class="mt-2 text-base text-aurea-charcoal/70">Un marketplace accesible y escalable que brinda a los negocios la oportunidad de digitalizarse y conectar con clientes de manera más directa, creando fidelización.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Catálogo de Productos -->
-        <div class="bg-white">
+        <div id="product-catalog" class="bg-aurea-neutral-gray/20">
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
                 <h2 class="text-3xl font-bold tracking-tight text-aurea-charcoal text-center">Nuestros Productos</h2>
                 <div id="product-grid" class="mt-10 grid grid-cols-1 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
@@ -121,25 +160,22 @@
     <footer class="bg-aurea-charcoal text-aurea-white">
         <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
             <p>&copy; 2024 Áurea. Todos los derechos reservados.</p>
-            <p class="text-sm text-aurea-neutral-gray mt-2">Transformando el comercio en Nicaragua.</p>
+            <p class="text-sm text-aurea-neutral-gray mt-2">¿Estás listo para ser parte de esta transformación?</p>
         </div>
     </footer>
 
     <!-- Firebase y Lógica de Productos -->
     <script type="module">
-        // Importa la instancia de Firestore
         import { db } from './firebase-config.js';
-        // Importa las funciones necesarias de Firestore
         import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const productGrid = document.getElementById('product-grid');
 
-        // Función para renderizar los productos en el HTML
         const displayProducts = (products) => {
-            productGrid.innerHTML = ''; // Limpia el contenedor (importante para quitar el mensaje de carga)
+            productGrid.innerHTML = ''; 
             products.forEach(product => {
                 const productCard = `
-                    <a href="#" class="group">
+                    <a href="product-detail.html?id=${product.id}" class="group">
                         <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-w-7 xl:aspect-h-8">
                             <img src="${product.imageUrl || 'https://placehold.co/400x500/d3d3d3/222222?text=Producto'}" alt="${product.name}" class="h-full w-full object-cover object-center group-hover:opacity-75 transition">
                         </div>
@@ -151,10 +187,8 @@
                 productGrid.innerHTML += productCard;
             });
         };
-
-        // Función para obtener los productos desde Firestore
+        
         const fetchAndDisplayProducts = async () => {
-            // Muestra un indicador de carga mientras se obtienen los datos
             productGrid.innerHTML = '<p class="text-center col-span-full text-aurea-charcoal/70">Cargando productos...</p>';
 
             try {
@@ -163,7 +197,6 @@
                 querySnapshot.forEach((doc) => {
                     products.push({ id: doc.id, ...doc.data() });
                 });
-                
                 if(products.length === 0){
                     productGrid.innerHTML = '<p class="text-center col-span-full text-aurea-charcoal/70">No hay productos disponibles en este momento.</p>';
                 } else {
@@ -176,7 +209,6 @@
             }
         };
 
-        // Llama a la función para obtener y mostrar los productos cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', fetchAndDisplayProducts);
     </script>
 </body>
