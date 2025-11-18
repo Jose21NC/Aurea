@@ -53,3 +53,4 @@ export function useFavorites() {
   }
   return ctx;
 }
+// eslint-disable-next-line react-refresh/only-export-components

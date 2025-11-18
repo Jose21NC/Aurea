@@ -1,5 +1,5 @@
 // Lista simple de reseñas simuladas
-function ReviewList({ productId }) {
+function ReviewList() {
   // datos fake; podrías personalizarlos por productoId
   const reviews = [
     {

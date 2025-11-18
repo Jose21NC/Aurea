@@ -14,38 +14,17 @@ function ProductDetail() {
   const { isFavorite, toggleFavorite } = useFavorites();
   const favorite = product ? isFavorite(product.id) : false;
 
-  if (!product) {
-    return (
-      <div className="pt-4 px-4">
-        <p className="text-sm text-[#111111]">Prenda no encontrada.</p>
-      </div>
-    );
-  }
-
-  const {
-    id,
-    nombre,
-    precioFinal,
-    calificacion,
-    vendidos,
-    imagenUrl,
-    estilo,
-    talla,
-    tieneDescuento,
-    porcentajeDescuento,
-    stockEstado,
-    vendedor,
-  } = product;
+  
 
   // Imágenes del producto
   const imagenes =
-    product.imagenes && product.imagenes.length > 0
+    (product?.imagenes && product.imagenes.length > 0
       ? product.imagenes
       : [
-          imagenUrl,
+          product?.imagenUrl,
           "https://images.pexels.com/photos/7671166/pexels-photo-7671166.jpeg?auto=compress&cs=tinysrgb&w=600",
           "https://images.pexels.com/photos/6311650/pexels-photo-6311650.jpeg?auto=compress&cs=tinysrgb&w=600",
-        ].filter(Boolean);
+        ])?.filter(Boolean) || [];
 
   const [activeImage, setActiveImage] = useState(0);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
@@ -58,11 +37,11 @@ function ProductDetail() {
 
   // Tallas
   const tallasDisponibles =
-    product.tallas && product.tallas.length > 0
+    product?.tallas && product.tallas.length > 0
       ? product.tallas
       : ["XS", "S", "M", "L", "XL"];
   const [tallaSeleccionada, setTallaSeleccionada] = useState(
-    talla || tallasDisponibles[2] || "M"
+    product?.talla || tallasDisponibles[2] || "M"
   );
 
   // Estilos visuales (defaults)
@@ -72,21 +51,21 @@ function ProductDetail() {
     { id: "look3", label: "Look 3", imageUrl: imagenes[2] || "https://picsum.photos/seed/look3/200/260" },
   ];
 
-  const styleOptions = product.estilosVisuales && product.estilosVisuales.length ? product.estilosVisuales : defaultStyleOptions;
+  const styleOptions = product?.estilosVisuales && product.estilosVisuales.length ? product.estilosVisuales : defaultStyleOptions;
   const [estiloSeleccionado, setEstiloSeleccionado] = useState(styleOptions[0]?.id || "look1");
 
-  const estiloBaseTexto = estilo || "Urbano";
+  const estiloBaseTexto = product?.estilo || "Urbano";
   const estiloVarianteTexto = styleOptions.find((s) => s.id === estiloSeleccionado)?.label || "Estilo seleccionado";
-  const stockTexto = stockEstado || "Stock normal";
+  const stockTexto = product?.stockEstado || "Stock normal";
 
   // Cantidad
   const [cantidad, setCantidad] = useState(1);
   const incrementarCantidad = () => setCantidad((c) => (c < 10 ? c + 1 : c));
   const decrementarCantidad = () => setCantidad((c) => (c > 1 ? c - 1 : c));
-  const subtotal = precioFinal * cantidad;
+  const subtotal = (product?.precioFinal ?? 0) * cantidad;
 
   // Puntuación de Aura (1–10 con un decimal)
-  const baseCal = calificacion ?? 4.5;
+  const baseCal = product?.calificacion ?? 4.5;
   let rawScore = 7.5 + (baseCal - 3) * 0.8;
   if (rawScore > 9.7) rawScore = 9.7;
   if (rawScore < 7.5) rawScore = 7.5;
@@ -97,10 +76,10 @@ function ProductDetail() {
 
   // Si el producto tiene una imagen ya generada para el probador (probadorUrl),
   // la usamos cuando se abre el modal de "Probar con IA".
-  const probadorVariant = product.colores && product.colores.length > 0 ? product.colores[0].nombre : null;
+    const probadorVariant = product?.colores && product.colores.length > 0 ? product.colores[0].nombre : null;
 
   // Lista de productos que ya tienen probador IA generado (excluye el actual)
-  const productsWithTryOn = getAllProducts().filter((p) => p.probadorUrl && String(p.id) !== String(product.id));
+  const productsWithTryOn = getAllProducts().filter((p) => p.probadorUrl && String(p.id) !== String(product?.id));
 
   // URL base del probador: se puede personalizar desde Perfil (localStorage)
   const getTryOnBaseUrl = () => {
@@ -119,7 +98,7 @@ function ProductDetail() {
   };
 
   // Helpers para personalizar el contenido del probador según la prenda
-  const primaryColor = (product.colores && product.colores[0] && product.colores[0].nombre) || "";
+  const primaryColor = (product?.colores && product.colores[0] && product.colores[0].nombre) || "";
 
   const colorimetryFor = (colorName) => {
     const c = (colorName || "").toLowerCase();
@@ -148,7 +127,6 @@ function ProductDetail() {
         return { label: "regular", description: "Corte estándar, cómodo y versátil para distintas ocasiones." };
     }
   };
-
   const lookRecommendationsFor = (style) => {
     switch ((style || "").toLowerCase()) {
       case "deportivo":
@@ -158,8 +136,6 @@ function ProductDetail() {
       case "street":
       case "urbano":
         return ["Zapatillas chunky", "Chaqueta bomber o denim", "Gorro beanie o riñonera"];
-      case "verano":
-        return ["Sandalias minimalistas", "Sombrero de ala corta", "Bolso tejido ligero"];
       case "workwear":
         return ["Botas resistentes", "Cinturón utilitario", "Chaqueta tipo overcoat"];
       case "vintage":
@@ -228,6 +204,14 @@ function ProductDetail() {
     setHasCombinations(false);
   };
 
+  if (!product) {
+    return (
+      <div className="pt-4 px-4">
+        <p className="text-sm text-[#111111]">Prenda no encontrada.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="pt-4 pb-24 px-4 space-y-4 relative">
       {/* Cabecera: Aurea con botón volver */}
@@ -264,7 +248,7 @@ function ProductDetail() {
               >
                 <img
                   src={src}
-                  alt={`${nombre} ${index + 1}`}
+                  alt={`${product.nombre} ${index + 1}`}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -278,7 +262,9 @@ function ProductDetail() {
               }`}
               onClick={(e) => {
                 e.stopPropagation();
-                toggleFavorite(id);
+                if (product?.id != null) {
+                  toggleFavorite(product.id);
+                }
               }}
             >
               {favorite ? "❤" : "♡"}
@@ -326,7 +312,7 @@ function ProductDetail() {
             <div className="mx-4 rounded-[28px] overflow-hidden bg-black">
               <img
                 src={imagenes[activeImage]}
-                alt={nombre}
+                alt={product.nombre}
                 className="w-full h-full object-contain"
               />
             </div>
@@ -337,10 +323,10 @@ function ProductDetail() {
         </div>
       )}
 
-      {/* Zoom de la imagen del probador */}
+      {/* Zoom de la imagen del probador (siempre por encima del modal) */}
       {isTryOnZoomOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+          className="fixed inset-0 z-[80] flex items-center justify-center bg-black/80"
           onClick={() => setIsTryOnZoomOpen(false)}
         >
           <div className="w-full max-w-sm">
@@ -581,7 +567,7 @@ function ProductDetail() {
       <section className="space-y-3">
         <div className="space-y-1">
           <h1 className="text-xl font-semibold text-[#111111] leading-snug">
-            {nombre}
+            {product.nombre}
           </h1>
           <p className="text-[12px] text-[#70707A]">
             {estiloBaseTexto.toLowerCase()} · Talla {tallaSeleccionada} ·{" "}
@@ -598,7 +584,7 @@ function ProductDetail() {
           <div className="flex items-center justify-between gap-2">
             <p className="text-3xl font-semibold text-[#111111]">
               C$
-              {precioFinal.toLocaleString("es-NI", {
+              {product.precioFinal.toLocaleString("es-NI", {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 0,
               })}
@@ -606,10 +592,10 @@ function ProductDetail() {
             <div className="flex flex-col items-end gap-1">
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#111111] text-[11px] text-white font-medium">
                 <span>⭐</span>
-                <span>{(calificacion ?? 4.6).toFixed(1)}</span>
+                <span>{(product.calificacion ?? 4.6).toFixed(1)}</span>
                 <span>·</span>
                 <span>
-                  {(vendidos ?? 74).toLocaleString("es-NI")} vendidos
+                  {(product.vendidos ?? 74).toLocaleString("es-NI")} vendidos
                 </span>
               </span>
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#ECFEFF] text-[11px] text-[#0F766E] font-semibold">
@@ -745,27 +731,27 @@ function ProductDetail() {
           <div className="h-10 w-10 rounded-full overflow-hidden bg-[#E4E4EA]">
             <img
               src={
-                vendedor?.avatarUrl ||
+                product.vendedor?.avatarUrl ||
                 "https://images.pexels.com/photos/7671166/pexels-photo-7671166.jpeg?auto=compress&cs=tinysrgb&w=200"
               }
-              alt={vendedor?.nombre || "Luna Casual"}
+              alt={product.vendedor?.nombre || "Luna Casual"}
               className="w-full h-full object-cover"
             />
           </div>
 
           <div className="flex-1">
             <p className="text-[13px] font-medium text-[#111111]">
-              {vendedor?.nombre || "Luna Casual"}
+              {product.vendedor?.nombre || "Luna Casual"}
             </p>
             <p className="text-[11px] text-[#70707A]">
-              {vendedor?.estilo || "Casual / diario"} ·{" "}
-              {vendedor?.ciudad || "León"}
+              {product.vendedor?.estilo || "Casual / diario"} ·{" "}
+              {product.vendedor?.ciudad || "León"}
             </p>
             <div className="flex items-center gap-2 text-[11px] text-[#70707A]">
               <span>⭐ 4.6</span>
               <span>
                 ·{" "}
-                {(vendedor?.seguidores ?? 4600).toLocaleString("es-NI")}{" "}
+                {(product.vendedor?.seguidores ?? 4600).toLocaleString("es-NI")}{" "}
                 seguidores
               </span>
             </div>
@@ -886,7 +872,7 @@ function ProductDetail() {
                 Agregado al carrito
               </p>
               <p className="text-[12px] text-[#55555F]">
-                {cantidad} × {nombre}
+                {cantidad} × {product.nombre}
               </p>
               <p className="text-[12px] text-[#111111] font-medium">
                 Subtotal: C$

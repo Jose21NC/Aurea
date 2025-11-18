@@ -108,7 +108,10 @@ function Home() {
 
   const banner = carruselItems[bannerIndex];
   const filtrados = filtrarProductos(base, activeFilter);
-  const productosParaMostrar = [...filtrados, ...all].slice(0, 8);
+  // Dedupe por id y muestra todos
+  const productosParaMostrar = Array.from(
+    new Map([...filtrados, ...all].map((p) => [String(p.id), p])).values()
+  );
 
   return (
     <div className="pt-4 px-4 space-y-6">
