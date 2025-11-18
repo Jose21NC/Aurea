@@ -67,18 +67,18 @@ function Layout({ children }) {
   };
 
   return (
-  <div className="min-h-screen bg-[#F2F2F6] flex justify-center items-stretch transition-colors duration-200">
+    <div className="min-h-screen bg-[#F2F2F6] flex justify-center items-stretch transition-colors duration-200">
       {/* Contenedor tipo teléfono */}
       <div
-        className={`w-full max-w-sm h-screen bg-white flex flex-col transform transition-transform duration-200 ease-out ${
-          isBackAnimating ? "translate-x-full" : "translate-x-0"
+        className={`w-full max-w-sm h-screen bg-white flex flex-col ${
+          isBackAnimating ? "transform translate-x-full transition-transform duration-200 ease-out" : ""
         } ${isEntering ? "opacity-0" : "opacity-100"} transition-opacity`}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
         {/* Solo el main scrollea */}
-        <main className="flex-1 overflow-y-auto pb-16 will-change-transform">{children}</main>
+        <main className="flex-1 overflow-y-auto pb-16">{children}</main>
         <BottomNav />
       </div>
     </div>

@@ -102,7 +102,7 @@ function BottomNav() {
   const navigate = useNavigate();
 
   return (
-    <nav className="h-14 border-t border-[#E4E4EA] bg-white flex items-center justify-around px-2 fixed bottom-0 left-0 right-0 max-w-sm mx-auto">
+    <nav className="h-14 border-t border-[#E4E4EA] bg-white flex items-center justify-around px-2 fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-sm">
       {items.map((item) => {
         const active =
           item.route === "/"
