@@ -1,8 +1,9 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getAllProducts } from "../data/products.js";
 
 function TryOn() {
+  const navigate = useNavigate();
   const productsWithTryOn = getAllProducts().filter((p) => !!p.probadorUrl);
 
   const auraScore = (p) => {
@@ -54,10 +55,15 @@ function TryOn() {
           <h2 className="text-[13px] font-semibold text-[#111111]">Tus últimas pruebas</h2>
           <div className="grid grid-cols-2 gap-3">
             {productsWithTryOn.map((p) => (
-              <Link
-                to={`/product/${p.id}`}
+              <div
                 key={p.id}
-                className="group rounded-2xl bg-white border border-[#E4E4EA] shadow-[0_6px_18px_rgba(0,0,0,0.04)] overflow-hidden transition-transform duration-200 hover:-translate-y-0.5"
+                role="button"
+                tabIndex={0}
+                onClick={() => navigate(`/product/${p.id}`)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") navigate(`/product/${p.id}`);
+                }}
+                className="group rounded-2xl bg-white border border-[#E4E4EA] shadow-[0_6px_18px_rgba(0,0,0,0.04)] overflow-hidden transition-transform duration-200 hover:-translate-y-0.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#111111]/20"
               >
                 <div className="relative h-40 w-full bg-[#EDEEF2]">
                   <img
@@ -95,7 +101,7 @@ function TryOn() {
                     </span>
                   </div>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         </section>
