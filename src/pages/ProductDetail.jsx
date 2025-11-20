@@ -1,5 +1,5 @@
 // src/pages/ProductDetail.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { getAllProducts } from "../data/products.js";
 import { currentUser } from "../data/user.jsx";
@@ -13,6 +13,15 @@ function ProductDetail() {
   const product = getAllProducts().find((p) => String(p.id) === idString);
   const { isFavorite, toggleFavorite } = useFavorites();
   const favorite = product ? isFavorite(product.id) : false;
+
+  // Al abrir una prenda, aseguramos que el scroll esté en la parte superior
+  useEffect(() => {
+    try {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    } catch {
+      // noop
+    }
+  }, [product?.id]);
 
   
 
@@ -142,6 +151,61 @@ function ProductDetail() {
         return ["Zapatos retro", "Cinturón ancho", "Accesorios dorados discretos"];
       default:
         return ["Tenis blancos limpios", "Chaqueta ligera", "Bolso cruzado pequeño"];
+    }
+  };
+  // Combinaciones orientadas a estilo masculino (evitar accesorios femeninos como aretes)
+  const maleCombinationsFor = (style) => {
+    const s = (style || "").toLowerCase();
+    switch (s) {
+      case "deportivo":
+        return [
+          "Zapatillas running blancas",
+          "Short técnico o jogger ligero",
+          "Gorra respirable",
+          "Reloj deportivo",
+          "Cinturón elástico minimal"
+        ];
+      case "formal":
+        return [
+          "Zapatos derby en cuero",
+          "Cinturón de cuero oscuro",
+          "Reloj minimal acero",
+          "Correa discreta",
+          "Bolso tipo portadocumentos"
+        ];
+      case "street":
+      case "urbano":
+        return [
+          "Zapatillas blancas clásicas",
+          "Chaqueta denim ligera",
+          "Gorra plana negra",
+          "Mochila compacta",
+          "Pulsera de cuero simple"
+        ];
+      case "workwear":
+        return [
+          "Botas urbanas resistentes",
+          "Cinturón lona tonos neutros",
+          "Mochila utilitaria",
+          "Gafas de sol clásicas",
+          "Reloj robusto"
+        ];
+      case "vintage":
+        return [
+          "Zapatillas retro",
+          "Chaqueta bomber vintage",
+          "Gafas estilo aviador",
+          "Pulsera metálica",
+          "Cinturón cuero envejecido"
+        ];
+      default:
+        return [
+          "Tenis blancos limpios",
+          "Chaqueta ligera neutra",
+          "Gafas de sol clásicas",
+          "Reloj minimal",
+          "Mochila urbana"
+        ];
     }
   };
 
@@ -497,43 +561,27 @@ function ProductDetail() {
 
                     {!isCombining && hasCombinations && (
                       <div className="mt-2 rounded-xl bg-[#F5F3FF] px-2.5 py-2">
-                        <p className="text-[10px] font-semibold text-[#4C1D95] mb-1">
-                          Combinaciones sugeridas
-                        </p>
-                        <div className="flex gap-2 text-[11px] text-[#4C1D95]">
-                          <div className="flex-1 space-y-1">
-                            <p>
-                              •{" "}
-                              <span className="font-semibold">
-                                Sandalias nude minimalistas
-                              </span>{" "}
-                              y bolso pequeño cruzado.
-                            </p>
-                            <p>
-                              •{" "}
-                              <span className="font-semibold">
-                                Chaqueta denim ligera
-                              </span>{" "}
-                              para noches frescas.
-                            </p>
-                          </div>
-                          <div className="flex-1 space-y-1">
-                            <p>
-                              •{" "}
-                              <span className="font-semibold">
-                                Aretes dorados delicados
-                              </span>{" "}
-                              y pulsera fina.
-                            </p>
-                            <p>
-                              •{" "}
-                              <span className="font-semibold">
-                                Tenis blancos limpios
-                              </span>{" "}
-                              para mantener el look urbano y cómodo.
-                            </p>
-                          </div>
-                        </div>
+                        <p className="text-[10px] font-semibold text-[#4C1D95] mb-1">Combinaciones sugeridas</p>
+                        {(() => {
+                          const combos = maleCombinationsFor(product.estilo);
+                          const mid = Math.ceil(combos.length / 2);
+                          const col1 = combos.slice(0, mid);
+                          const col2 = combos.slice(mid);
+                          return (
+                            <div className="flex gap-2 text-[11px] text-[#4C1D95]">
+                              <div className="flex-1 space-y-1">
+                                {col1.map((c, i) => (
+                                  <p key={i}>• <span className="font-semibold">{c}</span></p>
+                                ))}
+                              </div>
+                              <div className="flex-1 space-y-1">
+                                {col2.map((c, i) => (
+                                  <p key={i}>• <span className="font-semibold">{c}</span></p>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })()}
                       </div>
                     )}
                   </div>
